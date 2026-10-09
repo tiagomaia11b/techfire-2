@@ -1,0 +1,20 @@
+/* =====================================================================
+   PÁGINA CONEXÃO › GPS (gps.html)
+   ===================================================================== */
+.gps-grid{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+@media (max-width:950px){.gps-grid{grid-template-columns:1fr}}
+#mapa{height:480px;border-radius:var(--r-md);border:1px solid var(--line);background:var(--surface-2);z-index:0}
+@media (max-width:600px){#mapa{height:340px}}
+.gps-card .topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.gps-card .topo h3{margin:0}
+.gps-card .coords{margin:14px 0 4px;font-size:.92rem}
+.gps-card .botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.seguir{display:flex;gap:8px;align-items:center;font-size:.88rem;margin-top:12px}
+.seguir input{accent-color:var(--fire)}
+.erro-api{font-size:.85rem;color:var(--fire);margin:10px 0 0}
+.erro-api:empty{display:none}
+.teste{display:grid;gap:10px;max-width:520px}
+.teste .linha{display:flex;gap:8px;flex-wrap:wrap}
+.teste .linha .input{flex:1;min-width:200px}
+.fiacao{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.fiacao table{min-width:0}

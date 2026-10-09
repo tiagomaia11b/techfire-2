@@ -1,0 +1,8 @@
+/* =====================================================================
+   PÁGINA AO VIVO (aovivo.html)
+   O player, o selo AO VIVO e a telemetria ficam em css/estilo.css
+   porque a página Câmera também usa.
+   ===================================================================== */
+.links-conexao{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.vid-card .player{border-radius:var(--r-sm)}
+.vid-card h3{margin:14px 0 4px}

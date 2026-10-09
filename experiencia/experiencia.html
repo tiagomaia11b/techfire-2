@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Experiência · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="experiencia.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title"><h1>Experiência do usuário</h1><p>Como uma pessoa usa o GuardFlame, do cadastro ao relatório.</p></div>
+<div class="section tight"><div class="wrap"><h2 style="font-size:1.5rem">Jornada do usuário</h2><div class="journey" id="journeyList"></div></div></div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Painel de monitoramento</h2><p class="muted">O que o operador vê durante o voo. <a href="../gps/gps.html" style="color:var(--fire);font-weight:600">Abrir o mapa GPS ao vivo →</a></p></div>
+    <div class="dash">
+      <div class="map" id="mapBox"></div>
+      <div class="grid" style="align-content:start">
+        <div class="card"><span class="muted">Status</span><h3 style="color:var(--leaf)" data-tel="status">Em voo</h3></div>
+        <div class="card"><span class="muted">Bateria</span><h3 class="num" data-tel="bat">87%</h3></div>
+        <div class="card"><span class="muted">Altitude</span><h3 class="num" data-tel="alt">60 m</h3></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <h3>Nível de risco detectado nas últimas 24 horas</h3>
+      <div class="bars" id="bars" role="img" aria-label="Gráfico do nível de risco por hora"></div>
+      <div class="bars-eixo muted"><span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>23h</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-head center"><h2>Exemplo de alerta</h2></div>
+    <div class="alert">
+      <h3><span data-icon="bell"></span>Possível foco de incêndio detectado</h3>
+      <dl>
+        <dt>Localização</dt><dd class="num">-23.5612, -46.6401</dd>
+        <dt>Confiança da IA</dt><dd class="num">94%</dd>
+        <dt>Indício</dt><dd>Chamas e fumaça na imagem</dd>
+        <dt>Horário</dt><dd class="num" id="alertTime">--</dd>
+        <dt>Área estimada</dt><dd>cerca de 40 m²</dd>
+      </dl>
+      <div class="acoes">
+        <button class="btn btn-fire btn-sm" data-toast="Brigada acionada">Acionar brigada</button>
+        <button class="btn btn-line btn-sm" data-toast="Aviso sonoro emitido pelo drone">Emitir aviso sonoro</button>
+        <button class="btn btn-line btn-sm" data-toast="Alerta marcado como falso alarme">Marcar como falso alarme</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Integração das tecnologias</h2><p class="muted">Como as peças conversam entre si.</p></div>
+    <div class="grid g3">
+      <div class="card"><div class="ic" data-icon="drone"></div><h3>Pixhawk 2.4.8</h3><p class="muted">Controla o voo, lê o GPS e envia a telemetria ao Raspberry Pi pelo protocolo MAVLink.</p></div>
+      <div class="card"><div class="ic" data-icon="chip"></div><h3>Raspberry Pi 4</h3><p class="muted">O cérebro da missão: analisa a imagem, transmite o vídeo para a Twitch e envia o GPS ao banco.</p></div>
+      <div class="card"><div class="ic" data-icon="eye"></div><h3>Arducam IMX708</h3><p class="muted">Câmera de 12 MP com foco automático que filma e alimenta a IA.</p></div>
+      <div class="card"><div class="ic" data-icon="pin"></div><h3>GPS NEO-6M</h3><p class="muted">Dá a posição do drone e de cada foco encontrado.</p></div>
+      <div class="card"><div class="ic" data-icon="mic"></div><h3>Áudio e voz</h3><p class="muted">Microfone, módulo de voz e alto-falantes com o MAX98357A.</p></div>
+      <div class="card"><div class="ic" data-icon="radio"></div><h3>Modem 4G + Twitch</h3><p class="muted">Leva o vídeo ao vivo para a Twitch e os alertas para a internet.</p></div>
+      <div class="card"><div class="ic" data-icon="db"></div><h3>Site e banco de dados</h3><p class="muted">O MySQL guarda o GPS e as ocorrências; o site mostra tudo em tempo real.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-head"><h2>Histórico de ocorrências</h2><p class="muted" id="histFonte"></p></div>
+    <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Localização</th><th>Confiança da IA</th><th>Situação</th></tr></thead><tbody id="histBody"></tbody></table></div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/telemetria.js"></script>
+<script src="experiencia.js"></script>
+</body>
+</html>

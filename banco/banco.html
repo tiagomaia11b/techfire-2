@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Banco de dados · Conexão · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="banco.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title">
+  <h1>Banco de dados</h1>
+  <p>O banco MySQL guarda as posições do GPS, os voos e os focos encontrados. O Raspberry Pi grava pelos arquivos PHP da pasta <code class="inline">api/</code>, e o site lê de lá.</p>
+  <div class="fluxo"><span>Raspberry Pi</span><i>→</i><span>api/*.php</span><i>→</i><span>MySQL</span><i>→</i><span>Site</span></div>
+</div>
+<div id="subnav"></div>
+
+<div class="section tight">
+  <div class="wrap banco-grid">
+    <div class="card">
+      <h3>Status da conexão <span class="pill" id="statusPill">--</span></h3>
+      <p class="muted" style="font-size:.85rem">API: <code class="inline" id="apiUrl">--</code></p>
+      <ul class="checklist" id="statusLista"></ul>
+      <div class="botoes"><button class="btn btn-line btn-sm" type="button" id="btnTestar">Testar de novo</button></div>
+    </div>
+    <div class="card">
+      <h3>Criar banco e tabelas</h3>
+      <p class="muted">Executa o <code class="inline">banco/guardflame.sql</code> no MySQL. Pode clicar de novo sem medo: não apaga nada.</p>
+      <div class="msg" id="instalarMsg" role="status"></div>
+      <form id="formInstalar">
+        <label class="field"><span>Chave da API (CHAVE_API do api/conexao.php)</span>
+          <div class="input"><span data-icon="lock"></span><input type="password" id="chaveInstalar" placeholder="Sua chave" autocomplete="off"></div></label>
+        <button class="btn btn-fire btn-block" type="submit"><span data-icon="db"></span>Criar banco e tabelas</button>
+      </form>
+      <p class="muted" style="font-size:.85rem;margin-top:12px">Ou importe o arquivo pelo phpMyAdmin (aba <b>Importar</b>).</p>
+      <form id="formApi" style="margin-top:18px;border-top:1px solid var(--line);padding-top:16px">
+        <label class="field" style="margin-bottom:8px"><span>Endereço da API</span>
+          <div class="input"><span data-icon="link"></span><input id="apiInput" placeholder="api/" autocomplete="off" spellcheck="false"></div></label>
+        <button class="btn btn-line btn-sm" type="submit">Salvar neste navegador</button>
+        <p class="muted" style="font-size:.82rem;margin:8px 0 0">Só mude se a pasta api/ estiver em outro servidor. Para todos, edite <code class="inline">api.url</code> no js/config.js.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Passo a passo</h2></div>
+    <div class="steps">
+      <div class="step"><div>
+        <h3>Tenha PHP e MySQL</h3>
+        <p><b>Para testar no seu computador:</b> instale o XAMPP, ligue <b>Apache</b> e <b>MySQL</b>, copie a pasta do site para <code class="inline">C:\xampp\htdocs\guardflame</code> e abra <code class="inline">http://localhost/guardflame</code>.</p>
+        <p><b>Para publicar:</b> use uma hospedagem com PHP e MySQL. Crie o banco pelo painel dela e anote host, usuário, senha e nome do banco.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Edite o api/conexao.php</h3>
+        <p>No XAMPP o usuário é <b>root</b> e a senha é vazia. Na hospedagem, use os dados do painel. Troque a <b>CHAVE_API</b> por uma senha só sua — ela também vai no Raspberry Pi.</p>
+<pre class="code"><code>const DB_HOST    = 'localhost';
+const DB_USUARIO = 'root';
+const DB_SENHA   = '';
+const DB_NOME    = 'guardflame';
+const CHAVE_API  = 'troque-esta-chave';</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Teste a conexão</h3>
+        <p>Clique em <b>Testar de novo</b> no quadro Status. Tem que aparecer “PHP funcionando” e “Conectou ao MySQL”.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Crie as tabelas</h3>
+        <p>Digite a chave no quadro <b>Criar banco e tabelas</b> e clique no botão. O status fica verde com as 4 tabelas.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Ligue o drone</h3>
+        <p>Siga a página <a href="../gps/gps.html">GPS</a> para o Raspberry Pi começar a gravar a posição. Os dados aparecem no fim desta página.</p>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section tight">
+  <div class="wrap">
+    <div class="section-head"><h2>Tabelas</h2></div>
+    <div class="tabelas">
+      <div class="card"><code>usuarios</code><p class="muted">Contas do site: nome, e-mail, senha criptografada e perfil.</p></div>
+      <div class="card"><code>voos</code><p class="muted">Cada missão: início, fim, área sobrevoada e observações.</p></div>
+      <div class="card"><code>telemetria</code><p class="muted">Posição GPS, altitude, velocidade, bateria e satélites, gravados a cada segundo pelo Raspberry Pi.</p></div>
+      <div class="card"><code>ocorrencias</code><p class="muted">Focos detectados pela IA: local, confiança, descrição e situação.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Script SQL</h2><p class="muted">Conteúdo de <a href="guardflame.sql" download style="color:var(--fire);font-weight:600">banco/guardflame.sql</a>.</p></div>
+    <pre class="code sql"><code id="sqlCode">Carregando…</code></pre>
+  </div>
+</div>
+
+<div class="section tight">
+  <div class="wrap dados">
+    <div class="section-head" style="margin-bottom:8px"><h2>Últimos dados gravados</h2><button class="btn btn-line btn-sm" type="button" id="btnDados">Atualizar</button></div>
+    <h3>Telemetria (GPS)</h3>
+    <div id="dadosTel"><p class="muted">Conecte o banco para ver os dados.</p></div>
+    <h3>Ocorrências</h3>
+    <div id="dadosOco"><p class="muted">Conecte o banco para ver os dados.</p></div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="banco.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quem somos · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="equipe.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title"><h1>Nossa equipe</h1><p>Os estudantes por trás do TechFire GuardFlame.</p></div>
+<div class="section tight"><div class="wrap"><div class="grid g4" id="teamList"></div></div></div>
+<div class="section alt">
+  <div class="wrap sobre">
+    <h2>Sobre o projeto</h2>
+    <p id="aboutText"></p>
+    <p class="muted">Os incêndios florestais destroem milhões de hectares todos os anos no Brasil. Quanto antes um foco é encontrado, menor o estrago. O GuardFlame une drone, câmera com inteligência artificial, GPS, internet 4G e um painel online para encurtar esse tempo.</p>
+  </div>
+</div>
+<div class="section" id="contato">
+  <div class="wrap contato">
+    <div class="section-head center"><div class="ic" style="margin-inline:auto" data-icon="mail"></div><h2>Entre em contato</h2><p class="muted">Dúvidas, orçamento ou parceria.</p></div>
+    <form class="card" id="contactForm">
+      <label class="field"><span>Nome</span><div class="input"><span data-icon="user"></span><input name="nome" required placeholder="Seu nome"></div></label>
+      <label class="field"><span>E-mail</span><div class="input"><span data-icon="mail"></span><input name="email" type="email" required placeholder="seu@email.com"></div></label>
+      <label class="field"><span>Mensagem</span><textarea name="msg" required placeholder="Escreva sua mensagem"></textarea></label>
+      <button class="btn btn-fire btn-block" type="submit">Enviar mensagem</button>
+    </form>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="equipe.js"></script>
+</body>
+</html>

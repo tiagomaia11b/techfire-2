@@ -1,0 +1,7 @@
+/* =====================================================================
+   PÁGINA MANUAL (manual.html)
+   Os passos numerados (.steps/.step) ficam em css/estilo.css.
+   ===================================================================== */
+.step .ir{display:inline-flex;align-items:center;gap:.3em;margin-left:10px;font-size:.85rem;text-decoration:none}
+.step .ir:hover{text-decoration:underline}
+.manual-video{max-width:860px}

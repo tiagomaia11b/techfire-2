@@ -1,0 +1,5 @@
+/* ============ JOGO ============ */
+.game-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
+@media (max-width:850px){.game-hero{grid-template-columns:1fr}}
+.abil{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.abil .ic{margin:0}

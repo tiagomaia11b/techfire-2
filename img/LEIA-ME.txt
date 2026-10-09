@@ -1,0 +1,1 @@
+Coloque aqui as fotos da equipe (ex.: ana.jpg) e informe o caminho no CONFIG.equipe

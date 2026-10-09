@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ao vivo · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="aovivo.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title">
+  <h1>Voo ao vivo</h1>
+  <p>Imagem da câmera do drone em tempo real, transmitida pela Twitch, e a telemetria do GPS. Abaixo ficam os voos gravados.</p>
+</div>
+<div class="section tight">
+  <div class="wrap live-grid">
+    <div>
+      <div class="player" id="livePlayer"><span class="live-badge">AO VIVO</span></div>
+      <div class="live-actions" id="liveActions"></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 style="margin:0">Telemetria</h3><span class="pill" data-tel-pill>--</span></div>
+      <p class="muted" style="font-size:.85rem;margin:8px 0 12px" data-tel="fonte">Carregando…</p>
+      <div class="tel">
+        <div><span>Status</span><b data-tel="status">--</b></div>
+        <div><span>Bateria</span><b data-tel="bat">--</b></div>
+        <div><span>Altitude</span><b data-tel="alt">--</b></div>
+        <div><span>Velocidade</span><b data-tel="vel">--</b></div>
+        <div><span>Detecção</span><b data-tel="tmax">--</b></div>
+        <div><span>Rede</span><b data-tel="sinal">--</b></div>
+      </div>
+      <p style="margin:14px 0 0;font-size:.85rem" class="muted">Posição: <b class="num" data-tel="gps">--</b></p>
+      <div class="links-conexao">
+        <a class="btn btn-line btn-sm" href="../gps/gps.html"><span data-icon="pin"></span>Ver no mapa</a>
+        <a class="btn btn-line btn-sm" href="../camera/camera.html"><span data-icon="eye"></span>Configurar câmera</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Voos gravados</h2><p class="muted">Gravações dos testes de campo do GuardFlame.</p></div>
+    <div class="grid g3" id="recordedList"></div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/termico.js"></script>
+<script src="../js/videos.js"></script>
+<script src="../js/transmissao.js"></script>
+<script src="../js/telemetria.js"></script>
+<script src="aovivo.js"></script>
+</body>
+</html>

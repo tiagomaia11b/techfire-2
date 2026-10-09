@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TechFire · GuardFlame 1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main id="app">
+
+<!-- ================= HOME ================= -->
+<section class="page" data-page="home" data-title="Início">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1><span class="sub">TechFire apresenta</span>GuardFlame 1.0</h1>
+        <p class="lead">Um drone com câmera de 12 MP, inteligência artificial e GPS que encontra focos de incêndio florestal no começo, quando ainda dá para apagar, e transmite tudo ao vivo pela rede 4G.</p>
+        <div class="ctas">
+          <a class="btn btn-fire" href="#aovivo"><span data-icon="radio"></span>Assistir ao vivo</a>
+          <a class="btn btn-line" href="#manual">Como funciona</a>
+        </div>
+        <div class="readout">
+          <div><b class="num">95%</b><span>precisão</span></div>
+          <div><b class="num">10x</b><span>mais rápido</span></div>
+          <div><b class="num">24/7</b><span>em operação</span></div>
+        </div>
+      </div>
+      <div class="scope"><canvas data-thermal data-main></canvas>
+        <div class="hud">
+          <div class="tl"><span class="rec">Mapa de detecção · simulação</span></div>
+          <div class="tr" data-hot>--</div>
+          <div class="bl"><span class="scale"></span><span>Risco baixo</span><span>alto</span></div>
+          <div class="br num" data-tel="gps">-23.5505, -46.6333</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Monitoramento em tempo real</h2><p class="muted">Tudo o que o drone capta chega ao painel em segundos.</p></div>
+      <div class="grid g4">
+        <div class="card"><div class="ic" data-icon="eye"></div><h3>Detecção por imagem</h3><p class="muted">A câmera Arducam de 12 MP e a IA no Raspberry Pi reconhecem fogo e fumaça na imagem.</p></div>
+        <div class="card"><div class="ic" data-icon="pin"></div><h3>GPS preciso</h3><p class="muted">Cada foco vem com latitude e longitude para a equipe ir direto ao ponto.</p></div>
+        <div class="card"><div class="ic" data-icon="wifi"></div><h3>Transmissão 4G</h3><p class="muted">O modem 4G envia o vídeo e os alertas mesmo longe de qualquer Wi-Fi.</p></div>
+        <div class="card"><div class="ic" data-icon="mic"></div><h3>Comunicação por voz</h3><p class="muted">Alto-falantes avisam quem está na área, e o drone entende comandos de voz.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head"><h2>Diferenciais</h2><p class="muted">Por que o GuardFlame é diferente de uma torre de vigilância.</p></div>
+      <div class="grid g3">
+        <div class="card"><div class="ic leaf" data-icon="coins"></div><h3>Baixo custo</h3><p class="muted">Feito com Raspberry Pi, Pixhawk e peças acessíveis, custa uma fração dos sistemas comerciais.</p></div>
+        <div class="card"><div class="ic leaf" data-icon="drone"></div><h3>Vai até o fogo</h3><p class="muted">Sobrevoa áreas de difícil acesso que câmeras fixas não alcançam.</p></div>
+        <div class="card"><div class="ic leaf" data-icon="zap"></div><h3>Fácil de operar</h3><p class="muted">Um painel simples, pensado para quem está em campo, não para técnicos.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section tight">
+    <div class="wrap">
+      <div class="section-head"><h2>Para quem é</h2></div>
+      <div class="audience">
+        <div><div class="ic" data-icon="building"></div><h3>Órgãos ambientais</h3><p class="muted">Fiscalização de reservas e parques.</p></div>
+        <div><div class="ic" data-icon="shield"></div><h3>Brigadas de incêndio</h3><p class="muted">Resposta mais rápida e segura.</p></div>
+        <div><div class="ic" data-icon="tree"></div><h3>Produtores rurais</h3><p class="muted">Proteção de lavouras e pastagens.</p></div>
+        <div><div class="ic" data-icon="users"></div><h3>Defesa Civil</h3><p class="muted">Informação confiável para decidir.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="goal">
+        <div><h2>Objetivo</h2><p>Reduzir o tempo entre o início de um foco e a chegada da brigada, diminuindo a área queimada e os danos à fauna, à flora e às pessoas.</p></div>
+        <div class="stats"><div><b>10x</b><span>mais rápido</span></div><div><b>95%</b><span>precisão</span></div><div><b>24/7</b><span>operação</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AO VIVO + VÍDEOS ================= -->
+<section class="page" data-page="aovivo" data-title="Ao vivo">
+  <div class="wrap page-title">
+    <h1>Voo ao vivo</h1>
+    <p>Imagem da câmera do drone em tempo real e telemetria do voo. Abaixo ficam os voos gravados.</p>
+  </div>
+  <div class="section tight">
+    <div class="wrap live-grid">
+      <div><div class="player" id="livePlayer"><span class="live-badge" id="liveBadge">AO VIVO</span></div><div id="liveActions" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"></div></div>
+      <div class="card">
+        <h3>Telemetria</h3>
+        <p class="muted" style="font-size:.85rem" id="telNote">Dados simulados para demonstração.</p>
+        <div class="tel">
+          <div><span>Status</span><b data-tel="status">Em voo</b></div>
+          <div><span>Bateria</span><b data-tel="bat">87%</b></div>
+          <div><span>Altitude</span><b data-tel="alt">60 m</b></div>
+          <div><span>Velocidade</span><b data-tel="vel">8 km/h</b></div>
+          <div><span>Detecção</span><b data-tel="tmax">--</b></div>
+          <div><span>Rede</span><b data-tel="sinal">4G</b></div>
+        </div>
+        <p style="margin:14px 0 0;font-size:.85rem" class="muted">Posição: <b class="num" data-tel="gps">--</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Voos gravados</h2><p class="muted">Gravações dos testes de campo do GuardFlame.</p></div>
+      <div class="grid g3" id="recordedList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANUAL ================= -->
+<section class="page" data-page="manual" data-title="Manual">
+  <div class="wrap page-title"><h1>Manual de operação</h1><p>Do drone desligado ao relatório final, em oito passos.</p></div>
+  <div class="section tight"><div class="wrap"><div class="steps" id="stepsList"></div></div></div>
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Vídeo demonstrativo</h2><p class="muted">Assista ao passo a passo completo.</p></div>
+      <div style="max-width:860px"><div class="player" data-video="manual"></div></div>
+    </div>
+  </div>
+  <div class="section tight">
+    <div class="wrap grid g3">
+      <div class="card"><div class="ic" data-icon="mail"></div><h3>Suporte técnico</h3><p class="muted">Dúvidas na operação? Fale com a equipe pela página Quem somos.</p></div>
+      <div class="card"><div class="ic" data-icon="clock"></div><h3>Tempo de resposta</h3><p class="muted">Respondemos em até 24 horas úteis.</p></div>
+      <div class="card"><div class="ic" data-icon="file"></div><h3>Atualizações</h3><p class="muted">Este manual acompanha a versão 1.0 do sistema.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUTO ================= -->
+<section class="page" data-page="produto" data-title="Produto">
+  <div class="wrap page-title"><h1>Componentes do sistema</h1><p>As peças que formam o GuardFlame 1.0 e o valor aproximado de cada uma no mercado brasileiro.</p></div>
+  <div class="section tight"><div class="wrap"><div class="grid g4" id="prodList"></div></div></div>
+  <div class="section tight">
+    <div class="wrap">
+      <div class="kit">
+        <div class="info">
+          <span class="tag">Kit completo</span>
+          <h2 style="margin-top:12px">GuardFlame 1.0</h2>
+          <ul><li>Drone F450 montado e calibrado com Pixhawk 2.4.8</li><li>Câmera Arducam IMX708 de 12 MP com foco automático</li><li>Raspberry Pi 4 com modem 4G para transmissão ao vivo</li><li>Sistema de áudio com reconhecimento de voz</li><li>Acesso ao painel de monitoramento</li></ul>
+          <p class="muted" style="margin:0">soma estimada dos componentes</p>
+          <div class="big num" id="kitPrice">R$ 2.800,00</div>
+          <div class="ctas" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+            <a class="btn btn-fire" href="#equipe">Solicitar orçamento</a>
+            <a class="btn btn-line" href="#manual">Ver manual</a>
+          </div>
+        </div>
+        <div class="art"><span data-icon="drone"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUEM SOMOS ================= -->
+<section class="page" data-page="equipe" data-title="Quem somos">
+  <div class="wrap page-title"><h1>Nossa equipe</h1><p>Os estudantes por trás do TechFire GuardFlame.</p></div>
+  <div class="section tight"><div class="wrap"><div class="grid g4" id="teamList"></div></div></div>
+  <div class="section alt">
+    <div class="wrap" style="max-width:820px">
+      <h2>Sobre o projeto</h2>
+      <p id="aboutText"></p>
+      <p class="muted">Os incêndios florestais destroem milhões de hectares todos os anos no Brasil. Quanto antes um foco é encontrado, menor o estrago. O GuardFlame une drone, câmera com inteligência artificial, GPS, internet 4G e um painel online para encurtar esse tempo.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="wrap" style="max-width:620px">
+      <div class="section-head center"><div class="ic" style="margin-inline:auto" data-icon="mail"></div><h2>Entre em contato</h2><p class="muted">Dúvidas, orçamento ou parceria.</p></div>
+      <form class="card" id="contactForm">
+        <label class="field"><span>Nome</span><div class="input"><span data-icon="user"></span><input name="nome" required placeholder="Seu nome"></div></label>
+        <label class="field"><span>E-mail</span><div class="input"><span data-icon="mail"></span><input name="email" type="email" required placeholder="seu@email.com"></div></label>
+        <label class="field"><span>Mensagem</span><textarea name="msg" required placeholder="Escreva sua mensagem"></textarea></label>
+        <button class="btn btn-fire btn-block" type="submit">Enviar mensagem</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REFERÊNCIAS ================= -->
+<section class="page" data-page="referencias" data-title="Referências">
+  <div class="wrap page-title"><h1>Referências bibliográficas</h1><p>Livros, artigos e sites que embasaram o projeto.</p></div>
+  <div class="section tight"><div class="wrap" id="refList"></div></div>
+</section>
+
+
+<!-- ================= EXPERIÊNCIA (UX) ================= -->
+<section class="page" data-page="ux" data-title="Experiência">
+  <div class="wrap page-title"><h1>Experiência do usuário</h1><p>Como uma pessoa usa o GuardFlame, do cadastro ao relatório.</p></div>
+  <div class="section tight"><div class="wrap"><h2 style="font-size:1.5rem">Jornada do usuário</h2><div class="journey" id="journeyList"></div></div></div>
+
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Painel de monitoramento</h2><p class="muted">O que o operador vê durante o voo.</p></div>
+      <div class="dash">
+        <div class="map" id="mapBox"></div>
+        <div class="grid" style="align-content:start">
+          <div class="card"><span class="muted">Status</span><h3 style="margin:2px 0 0;color:var(--leaf)" data-tel="status">Em voo</h3></div>
+          <div class="card"><span class="muted">Bateria</span><h3 style="margin:2px 0 0" class="num" data-tel="bat">87%</h3></div>
+          <div class="card"><span class="muted">Altitude</span><h3 style="margin:2px 0 0" class="num" data-tel="alt">60 m</h3></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Nível de risco detectado nas últimas 24 horas</h3>
+        <div class="bars" id="bars" role="img" aria-label="Gráfico do nível de risco por hora"></div>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem" class="muted"><span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>23h</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head center"><h2>Exemplo de alerta</h2></div>
+      <div class="alert">
+        <h3><span data-icon="bell"></span>Possível foco de incêndio detectado</h3>
+        <dl>
+          <dt>Localização</dt><dd class="num">-23.5612, -46.6401</dd>
+          <dt>Confiança da IA</dt><dd class="num">94%</dd><dt>Indício</dt><dd>Chamas e fumaça na imagem</dd>
+          <dt>Horário</dt><dd class="num" id="alertTime">--</dd>
+          <dt>Área estimada</dt><dd>cerca de 40 m²</dd>
+        </dl>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-fire btn-sm" data-toast="Brigada acionada">Acionar brigada</button>
+          <button class="btn btn-line btn-sm" data-toast="Aviso sonoro emitido pelo drone">Emitir aviso sonoro</button><button class="btn btn-line btn-sm" data-toast="Alerta marcado como falso alarme">Marcar como falso alarme</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Integração das tecnologias</h2><p class="muted">Como as peças conversam entre si.</p></div>
+      <div class="grid g3">
+        <div class="card"><div class="ic" data-icon="drone"></div><h3>Pixhawk 2.4.8</h3><p class="muted">Controla o voo, lê o GPS e envia a telemetria ao Raspberry Pi pelo protocolo MAVLink.</p></div>
+        <div class="card"><div class="ic" data-icon="chip"></div><h3>Raspberry Pi 4</h3><p class="muted">O cérebro da missão: analisa a imagem, transmite o vídeo e cuida do áudio.</p></div>
+        <div class="card"><div class="ic" data-icon="eye"></div><h3>Arducam IMX708</h3><p class="muted">Câmera de 12 MP com foco automático que filma e alimenta a IA.</p></div>
+        <div class="card"><div class="ic" data-icon="pin"></div><h3>GPS NEO-6M</h3><p class="muted">Dá a posição do drone e de cada foco encontrado.</p></div>
+        <div class="card"><div class="ic" data-icon="mic"></div><h3>Áudio e voz</h3><p class="muted">Microfone, módulo de voz e alto-falantes com o MAX98357A.</p></div>
+        <div class="card"><div class="ic" data-icon="radio"></div><h3>Modem 4G</h3><p class="muted">Leva o vídeo e os alertas para a internet.</p></div>
+        <div class="card"><div class="ic" data-icon="db"></div><h3>Site e banco de dados</h3><p class="muted">Mostra tudo em tempo real e guarda as ocorrências.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head"><h2>Histórico de ocorrências</h2></div>
+      <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Localização</th><th>Confiança da IA</th><th>Situação</th></tr></thead><tbody id="histBody"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/termico.js"></script>
+<script src="js/videos.js"></script>
+<script src="js/dados.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

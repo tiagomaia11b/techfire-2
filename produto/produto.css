@@ -1,0 +1,19 @@
+/* =====================================================================
+   PÁGINA PRODUTO (produto.html)
+   ===================================================================== */
+.prod{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.prod .top{height:96px;display:grid;place-items:center;color:#fff}
+.prod .top svg.i{width:38px;height:38px}
+.prod .body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.prod ul{list-style:none;padding:0;margin:0 0 14px;font-size:.86rem;color:var(--muted)}
+.prod li{padding:4px 0;border-bottom:1px dashed var(--line)}
+.prod .price{margin-top:auto;font:800 1.3rem var(--f-display);color:var(--fire)}
+
+.kit{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.kit .info{padding:36px}
+.kit ul{padding-left:1.1em;color:var(--muted)}
+.kit .big{font:800 2.4rem var(--f-display);color:var(--fire);letter-spacing:-.02em}
+.kit .ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.kit .art{background:var(--fire);color:#fff;display:grid;place-items:center;min-height:260px}
+.kit .art svg.i{width:120px;height:120px;stroke-width:1.2}
+@media (max-width:800px){.kit{grid-template-columns:1fr}.kit .art{min-height:180px}}

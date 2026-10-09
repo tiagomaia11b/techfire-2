@@ -1,0 +1,14 @@
+/* =====================================================================
+   PÁGINA CONEXÃO › BANCO DE DADOS (banco.html)
+   ===================================================================== */
+.banco-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media (max-width:900px){.banco-grid{grid-template-columns:1fr}}
+.banco-grid .card h3{display:flex;align-items:center;gap:10px}
+.banco-grid .botoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tabelas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.tabelas .card code{font-weight:700;color:var(--fire);font-size:1rem}
+.tabelas .card p{font-size:.88rem;margin:6px 0 0}
+pre.code.sql{max-height:420px;overflow:auto}
+.dados h3{margin:26px 0 10px}
+.dados table{font-size:.85rem}
+.dados td{padding:10px 14px}

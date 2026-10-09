@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Criar conta · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="login.css">
+</head>
+<body data-raiz="../">
+
+<main>
+  <div class="auth">
+    <div class="auth-form">
+      <div class="inner">
+        <a class="brand" href="login.html"><span class="mark" data-icon="flame"></span>TechFire</a>
+        <h1>Criar conta</h1>
+        <p class="muted">Leva menos de um minuto.</p>
+        <div class="msg" id="signupMsg" role="alert"></div>
+        <form id="signupForm" novalidate>
+          <label class="field"><span>Nome completo</span>
+            <div class="input"><span data-icon="user"></span><input name="nome" placeholder="Seu nome" autocomplete="name" required></div>
+          </label>
+          <label class="field"><span>E-mail</span>
+            <div class="input"><span data-icon="mail"></span><input type="email" name="email" placeholder="seu@email.com" autocomplete="email" required></div>
+          </label>
+          <label class="field"><span>Você é</span>
+            <div class="input"><span data-icon="users"></span>
+              <select name="perfil">
+                <option>Brigada de incêndio</option><option>Órgão ambiental</option><option>Produtor rural</option><option>Defesa Civil</option><option>Estudante / avaliador</option>
+              </select></div>
+          </label>
+          <label class="field"><span>Senha</span>
+            <div class="input"><span data-icon="lock"></span><input type="password" name="senha" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" required>
+              <button type="button" class="peek" aria-label="Mostrar senha"><span data-icon="eye"></span></button></div>
+          </label>
+          <label class="field"><span>Confirmar senha</span>
+            <div class="input"><span data-icon="lock"></span><input type="password" name="senha2" placeholder="Repita a senha" autocomplete="new-password" required></div>
+          </label>
+          <label class="check"><input type="checkbox" name="termos"> Concordo com o uso dos meus dados para acesso ao sistema.</label>
+          <button class="btn btn-fire btn-block" type="submit">Criar conta</button>
+        </form>
+        <div class="auth-links"><span class="muted">Já tem conta?</span><a href="login.html">Entrar</a></div>
+      </div>
+    </div>
+    <div class="auth-side">
+      <button class="icon-btn theme-btn auth-top" data-theme-toggle aria-label="Alternar modo claro/escuro">
+        <span class="moon" data-icon="moon"></span><span class="sun" data-icon="sun"></span>
+      </button>
+      <div class="scope"><canvas data-thermal></canvas>
+        <div class="hud"><div class="tl"><span class="rec">Detecção por IA</span></div><div class="tr" data-hot>--</div><div class="bl"><span class="scale"></span></div><div class="br">GuardFlame 1.0</div></div>
+      </div>
+      <div class="facts">
+        <div><b>24/7</b><span>monitoramento contínuo</span></div>
+        <div><b>GPS</b><span>localização exata de cada foco</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/termico.js"></script>
+<script src="login.js"></script>
+</body>
+</html>

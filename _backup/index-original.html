@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TechFire · GuardFlame 1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF0F3; --ink:#16181D; --muted:#5D6470;
+  --line:#E1E4EA; --fire:#E2362B; --fire-2:#FF7E29; --fire-soft:#FDECEA; --leaf:#24865A; --leaf-soft:#E5F4EC;
+  --amber:#B76E00; --amber-soft:#FFF3DC; --shadow:0 1px 2px rgba(22,24,29,.06),0 8px 24px rgba(22,24,29,.06);
+  --r-sm:8px; --r-md:14px; --r-lg:22px;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+html[data-theme="dark"]{
+  --bg:#0E1013; --surface:#16191E; --surface-2:#1E2228; --ink:#ECEEF1; --muted:#99A0AC;
+  --line:#2A2F37; --fire:#FF4A3D; --fire-2:#FF8F3D; --fire-soft:#2A1513; --leaf:#4CC38A; --leaf-soft:#12251C;
+  --amber:#F2B14C; --amber-soft:#2A2112; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 80px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+img,video,iframe,canvas{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.1;margin:0 0 .5em;letter-spacing:-.02em}
+h1{font-size:clamp(2.4rem,5.5vw,4.4rem);font-weight:800}
+h2{font-size:clamp(1.7rem,3.2vw,2.5rem);font-weight:800}
+h3{font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+p{margin:0 0 1em}
+.muted{color:var(--muted)}
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 20px}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--fire-2);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg.i{width:1.2em;height:1.2em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ============ BOTÕES / CAMPOS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;padding:.8em 1.3em;border-radius:999px;border:1.5px solid transparent;font:600 .95rem var(--f-body);cursor:pointer;text-decoration:none;transition:transform .15s,background .2s,border-color .2s}
+.btn:active{transform:scale(.97)}
+.btn-fire{background:var(--fire);color:#fff}
+.btn-fire:hover{background:color-mix(in srgb,var(--fire) 88%,#000)}
+.btn-line{border-color:var(--line);background:var(--surface);color:var(--ink)}
+.btn-line:hover{border-color:var(--fire);color:var(--fire)}
+.btn-block{width:100%}
+.btn-sm{padding:.5em .95em;font-size:.85rem}
+.field{display:block;margin-bottom:1rem}
+.field>span{display:block;font-size:.85rem;font-weight:600;margin-bottom:.35rem}
+.input{position:relative;display:flex;align-items:center}
+.input>span{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:flex;color:var(--muted);pointer-events:none}
+.input input,.input select,textarea{width:100%;padding:.85em 1em .85em 2.8em;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink);font:500 .95rem var(--f-body);transition:border-color .2s,background .2s}
+textarea{padding:.85em 1em;min-height:120px;resize:vertical}
+.input input:focus,.input select:focus,textarea:focus{outline:none;border-color:var(--fire);background:var(--surface)}
+.input .peek{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--muted);cursor:pointer;padding:8px;display:flex}
+.msg{font-size:.88rem;border-radius:var(--r-sm);padding:.7em .9em;margin-bottom:1rem;display:none}
+.msg.err{display:block;background:var(--fire-soft);color:var(--fire)}
+.msg.ok{display:block;background:var(--leaf-soft);color:var(--leaf)}
+.check{display:flex;gap:.6em;align-items:flex-start;font-size:.88rem;margin-bottom:1.2rem}
+.check input{accent-color:var(--fire);margin-top:.3em}
+
+/* ============ TOPO ============ */
+.topbar{position:sticky;top:0;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;gap:16px;height:66px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 1.15rem var(--f-display);letter-spacing:-.02em}
+.brand .mark{width:34px;height:34px;border-radius:10px;background:var(--fire);color:#fff;display:grid;place-items:center}
+.nav{display:flex;gap:2px;margin-left:auto}
+.nav a{text-decoration:none;font-weight:600;font-size:.9rem;padding:.45em .8em;border-radius:999px;color:var(--muted);white-space:nowrap}
+.nav a:hover{color:var(--ink)}
+.nav a.on{background:var(--fire);color:#fff}
+.nav a.live{display:inline-flex;align-items:center;gap:.4em}
+.nav a.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--fire);box-shadow:0 0 0 3px color-mix(in srgb,var(--fire) 25%,transparent)}
+.nav a.live.on::before{background:#fff}
+.tools{display:flex;gap:8px;align-items:center}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+.icon-btn:hover{border-color:var(--fire);color:var(--fire)}
+.theme-btn .sun{display:none}
+html[data-theme="dark"] .theme-btn .sun{display:block}
+html[data-theme="dark"] .theme-btn .moon{display:none}
+.menu-btn{display:none}
+.user-chip{font-size:.85rem;font-weight:600;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:1100px){
+  .menu-btn{display:grid}
+  .nav{position:fixed;inset:66px 0 auto 0;top:calc(66px + env(safe-area-inset-top,0px));flex-direction:column;background:var(--surface);border-bottom:1px solid var(--line);padding:12px 20px 20px;gap:4px;display:none;margin:0}
+  .nav.open{display:flex}
+  .nav a{padding:.8em 1em}
+  .tools{margin-left:auto}
+  .user-chip{display:none}
+}
+body.is-auth .topbar,body.is-auth .site-foot{display:none}
+
+/* ============ PÁGINAS ============ */
+.page{display:none;animation:in .35s ease}
+.page.active{display:block}
+@keyframes in{from{opacity:0}to{opacity:1}}
+.section{padding:72px 0}
+.section.tight{padding:48px 0}
+.section-head{max-width:640px;margin-bottom:36px}
+.section-head.center{margin-inline:auto;text-align:center}
+.alt{background:var(--surface);border-block:1px solid var(--line)}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:22px}
+.card p:last-child{margin:0}
+.ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--fire-soft);color:var(--fire);margin-bottom:14px}
+.ic.leaf{background:var(--leaf-soft);color:var(--leaf)}
+.tag{display:inline-flex;align-items:center;gap:.4em;font-size:.78rem;font-weight:700;padding:.3em .75em;border-radius:999px;background:var(--fire-soft);color:var(--fire)}
+.tag.leaf{background:var(--leaf-soft);color:var(--leaf)}
+.tag.amber{background:var(--amber-soft);color:var(--amber)}
+.page-title{padding-top:56px;padding-bottom:8px}
+.page-title p{color:var(--muted);max-width:620px;font-size:1.05rem}
+
+/* ============ VISOR TÉRMICO (elemento assinatura) ============ */
+.scope{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#07060f;aspect-ratio:16/11;box-shadow:var(--shadow);isolation:isolate}
+.scope canvas{width:100%;height:100%}
+.scope .hud{position:absolute;inset:0;pointer-events:none;color:#fff;font:600 .78rem var(--f-body);font-variant-numeric:tabular-nums}
+.scope .hud .tl,.scope .hud .tr,.scope .hud .bl,.scope .hud .br{position:absolute;padding:14px 16px;display:flex;gap:10px;align-items:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.scope .hud .tl{top:0;left:0}.scope .hud .tr{top:0;right:0}.scope .hud .bl{bottom:0;left:0}.scope .hud .br{bottom:0;right:0}
+.rec{display:inline-flex;align-items:center;gap:6px}
+.rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff3b30;animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:.15}}
+.scale{width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#0a0a2a,#4a0c6b,#b0204f,#e8512a,#f9a81e,#fffbe0)}
+
+/* ============ HOME ============ */
+.hero{padding:56px 0 72px}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}
+.hero h1 .sub{display:block;font-size:.42em;font-weight:700;color:var(--fire);letter-spacing:0;margin-bottom:.5em}
+.hero .lead{font-size:1.15rem;color:var(--muted);max-width:30em}
+.hero .ctas{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.readout{display:flex;gap:28px;margin-top:36px;padding-top:24px;border-top:1px solid var(--line);flex-wrap:wrap}
+.readout b{display:block;font:800 1.9rem var(--f-display);letter-spacing:-.02em}
+.readout span{font-size:.85rem;color:var(--muted)}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}}
+.audience{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;background:var(--surface)}
+.audience>div{padding:24px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 -1px -1px 0}
+.goal{background:var(--fire);color:#fff;border-radius:var(--r-lg);padding:48px clamp(24px,5vw,56px);display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center}
+.goal h2{color:#fff}
+.goal p{color:rgba(255,255,255,.88)}
+.goal .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.goal .stats div{background:rgba(255,255,255,.12);border-radius:var(--r-md);padding:18px 14px}
+.goal .stats b{display:block;font:800 2rem var(--f-display)}
+.goal .stats span{font-size:.82rem}
+@media (max-width:800px){.goal{grid-template-columns:1fr}}
+
+/* ============ VÍDEOS ============ */
+.player{position:relative;border-radius:var(--r-md);overflow:hidden;background:#000;aspect-ratio:16/9}
+.player video,.player iframe,.player img{width:100%;height:100%;border:0;object-fit:cover}
+.player .empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:#cfd3da;background:repeating-linear-gradient(135deg,#15181d 0 14px,#191c22 14px 28px);font-size:.9rem}
+.player .empty b{display:block;color:#fff;font-family:var(--f-display);font-size:1.1rem;margin-bottom:4px}
+.player .empty code{background:rgba(255,255,255,.08);padding:.15em .45em;border-radius:5px;font-size:.85em}
+.live-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start}
+@media (max-width:950px){.live-grid{grid-template-columns:1fr}}
+.live-badge{position:absolute;top:14px;left:14px;z-index:2;background:#ff3b30;color:#fff;font:700 .75rem var(--f-body);padding:.35em .7em;border-radius:6px;display:none;align-items:center;gap:6px}
+.live-badge.on{display:inline-flex}
+.live-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s steps(2) infinite}
+.tel{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tel div{background:var(--surface-2);border-radius:var(--r-sm);padding:12px}
+.tel span{display:block;font-size:.78rem;color:var(--muted)}
+.tel b{font:700 1.25rem var(--f-display);font-variant-numeric:tabular-nums}
+.vid-card .player{border-radius:var(--r-sm)}
+.vid-card h3{margin:14px 0 4px}
+
+/* ============ MANUAL (sequência real → numerada) ============ */
+.steps{counter-reset:s;display:grid;gap:12px;max-width:860px}
+.step{display:grid;grid-template-columns:52px 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:18px 20px}
+.step::before{counter-increment:s;content:counter(s);width:40px;height:40px;border-radius:50%;background:var(--fire);color:#fff;display:grid;place-items:center;font:800 1.05rem var(--f-display)}
+.step h3{margin:6px 0 4px}
+.step p{color:var(--muted);margin-bottom:8px}
+
+/* ============ PRODUTOS ============ */
+.prod{display:flex;flex-direction:column;padding:0;overflow:hidden}
+.prod .top{height:96px;display:grid;place-items:center;color:#fff}
+.prod .top svg.i{width:38px;height:38px}
+.prod .body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.prod ul{list-style:none;padding:0;margin:0 0 14px;font-size:.86rem;color:var(--muted)}
+.prod li{padding:4px 0;border-bottom:1px dashed var(--line)}
+.prod .price{margin-top:auto;font:800 1.3rem var(--f-display);color:var(--fire)}
+.kit{display:grid;grid-template-columns:1fr 1fr;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.kit .info{padding:36px}
+.kit ul{padding-left:1.1em;color:var(--muted)}
+.kit .big{font:800 2.4rem var(--f-display);color:var(--fire);letter-spacing:-.02em}
+.kit .art{background:var(--fire);color:#fff;display:grid;place-items:center;min-height:260px}
+.kit .art svg.i{width:120px;height:120px;stroke-width:1.2}
+@media (max-width:800px){.kit{grid-template-columns:1fr}.kit .art{min-height:180px}}
+
+/* ============ EQUIPE ============ */
+.member{text-align:center}
+.avatar{width:96px;height:96px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;background:var(--fire-soft);color:var(--fire);font:800 1.6rem var(--f-display);overflow:hidden;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--fire)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+/* ============ REFERÊNCIAS ============ */
+.ref-group{margin-bottom:34px}
+.ref-group h3{display:flex;align-items:center;gap:10px;font-size:1.3rem}
+.ref{font-size:.93rem;padding:16px 18px}
+.ref .who{font-weight:700}
+.ref a{color:var(--fire);font-weight:600;font-size:.85rem}
+
+/* ============ JOGO ============ */
+.game-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
+@media (max-width:850px){.game-hero{grid-template-columns:1fr}}
+.abil{display:flex;gap:14px;align-items:flex-start;margin-bottom:12px}
+.abil .ic{margin:0}
+
+/* ============ UX / DASHBOARD ============ */
+.journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,125px),1fr));gap:10px;counter-reset:j}
+.journey div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);padding:14px;font-size:.88rem}
+.journey div::before{counter-increment:j;content:counter(j);display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--leaf-soft);color:var(--leaf);font-weight:800;font-size:.8rem;margin-bottom:8px}
+.journey b{display:block}
+.dash{display:grid;grid-template-columns:1fr 260px;gap:14px}
+@media (max-width:850px){.dash{grid-template-columns:1fr}}
+.map{border-radius:var(--r-md);overflow:hidden;border:1px solid var(--line);min-height:300px;background:var(--surface-2)}
+.map iframe{width:100%;height:100%;min-height:300px;border:0}
+.bars{display:flex;align-items:flex-end;gap:4px;height:160px;padding-top:10px}
+.bars i{flex:1;border-radius:4px 4px 0 0;background:var(--surface-2);position:relative;min-width:4px}
+.bars i.hot{background:var(--fire)}
+.bars i.warm{background:var(--fire-2)}
+.alert{border:2px solid var(--fire);background:var(--fire-soft);border-radius:var(--r-md);padding:22px;max-width:760px;margin-inline:auto}
+.alert h3{color:var(--fire);display:flex;gap:10px;align-items:center}
+.alert dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 16px;font-size:.93rem}
+.alert dt{color:var(--muted)}
+.alert dd{margin:0;font-weight:600}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:620px}
+th,td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line)}
+th{font-size:.8rem;color:var(--muted);font-weight:700;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+
+/* ============ AUTENTICAÇÃO ============ */
+.auth{min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(360px,1fr) 1.15fr}
+.auth-form{display:flex;flex-direction:column;justify-content:center;padding:40px clamp(24px,6vw,80px);background:var(--surface)}
+.auth-form .inner{width:100%;max-width:380px;margin:0 auto}
+.auth-form .brand{margin-bottom:36px}
+.auth-form h1{font-size:2.2rem}
+.auth-side{position:relative;padding:28px;display:flex;flex-direction:column;justify-content:center;gap:20px;background:var(--bg)}
+.auth-side .scope{aspect-ratio:auto;flex:1;max-height:560px}
+.auth-side .facts{display:flex;gap:12px}
+.auth-side .facts div{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px 16px}
+.auth-side .facts b{font:800 1.5rem var(--f-display);color:var(--fire)}
+.auth-side .facts span{display:block;font-size:.82rem;color:var(--muted)}
+.auth-links{display:flex;justify-content:space-between;font-size:.88rem;margin-top:16px;gap:10px;flex-wrap:wrap}
+.auth-links a,.linkish{color:var(--fire);font-weight:600;text-decoration:none;background:none;border:0;cursor:pointer;font:inherit;font-weight:600;padding:0}
+.auth-top{position:absolute;top:calc(16px + env(safe-area-inset-top,0px));right:16px;z-index:3}
+.divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.8rem;margin:18px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+@media (max-width:860px){.auth{grid-template-columns:1fr}.auth-side{display:none}}
+
+/* ============ RODAPÉ ============ */
+.site-foot{border-top:1px solid var(--line);background:var(--surface);padding:44px 0 28px;margin-top:40px;font-size:.9rem}
+.site-foot .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:28px}
+.site-foot h4{font-size:.95rem}
+.site-foot a{display:block;text-decoration:none;color:var(--muted);padding:3px 0}
+.site-foot a:hover{color:var(--fire)}
+.site-foot .copy{border-top:1px solid var(--line);margin-top:28px;padding-top:18px;color:var(--muted);font-size:.82rem}
+@media (max-width:700px){.site-foot .cols{grid-template-columns:1fr}}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,calc(100% + 60px));visibility:hidden;background:var(--ink);color:var(--bg);padding:.8em 1.2em;border-radius:999px;font-weight:600;font-size:.9rem;z-index:100;transition:transform .3s}
+.toast.show{transform:translate(-50%,0);visibility:visible}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ================= TOPO ================= -->
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#home"><span class="mark" data-icon="flame"></span>TechFire</a>
+    <nav class="nav" id="nav" aria-label="Principal">
+      <a href="#home">Início</a>
+      <a href="#aovivo" class="live">Ao vivo</a>
+      <a href="#manual">Manual</a>
+      <a href="#produto">Produto</a>
+      <a href="#equipe">Quem somos</a>
+      <a href="#referencias">Referências</a>
+      <a href="#jogo">Jogo</a>
+      <a href="#ux">Experiência</a>
+    </nav>
+    <div class="tools">
+      <span class="user-chip" id="userChip"></span>
+      <button class="icon-btn theme-btn" data-theme-toggle aria-label="Alternar modo claro/escuro">
+        <span class="moon" data-icon="moon"></span><span class="sun" data-icon="sun"></span>
+      </button>
+      <button class="icon-btn" id="logoutBtn" aria-label="Sair da conta" title="Sair"><span data-icon="logout"></span></button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false"><span data-icon="menu"></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+<!-- ================= LOGIN ================= -->
+<section class="page" data-page="login" data-title="Entrar">
+  <div class="auth">
+    <div class="auth-form">
+      <div class="inner">
+        <a class="brand" href="#login"><span class="mark" data-icon="flame"></span>TechFire</a>
+        <h1>Entrar</h1>
+        <p class="muted">Acesse o painel de monitoramento do GuardFlame.</p>
+        <div class="msg" id="loginMsg" role="alert"></div>
+        <form id="loginForm" novalidate>
+          <label class="field"><span>E-mail</span>
+            <div class="input"><span data-icon="mail"></span><input type="email" name="email" placeholder="seu@email.com" autocomplete="email" required></div>
+          </label>
+          <label class="field"><span>Senha</span>
+            <div class="input"><span data-icon="lock"></span><input type="password" name="senha" placeholder="Sua senha" autocomplete="current-password" required>
+              <button type="button" class="peek" aria-label="Mostrar senha"><span data-icon="eye"></span></button></div>
+          </label>
+          <button class="btn btn-fire btn-block" type="submit">Entrar</button>
+        </form>
+        <div class="auth-links">
+          <a href="#cadastro">Criar conta</a>
+          <button class="linkish" id="forgotBtn" type="button">Recuperar senha</button>
+        </div>
+        <div class="divider">ou</div>
+        <button class="btn btn-line btn-block" id="demoBtn" type="button">Entrar como visitante</button>
+      </div>
+    </div>
+    <div class="auth-side">
+      <button class="icon-btn theme-btn auth-top" data-theme-toggle aria-label="Alternar modo claro/escuro">
+        <span class="moon" data-icon="moon"></span><span class="sun" data-icon="sun"></span>
+      </button>
+      <div class="scope"><canvas data-thermal></canvas>
+        <div class="hud"><div class="tl"><span class="rec">Detecção por IA</span></div><div class="tr" data-hot>--</div><div class="bl"><span class="scale"></span></div><div class="br">GuardFlame 1.0</div></div>
+      </div>
+      <div class="facts">
+        <div><b>95%</b><span>de precisão na detecção</span></div>
+        <div><b>10x</b><span>mais rápido que a vigilância manual</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CADASTRO ================= -->
+<section class="page" data-page="cadastro" data-title="Criar conta">
+  <div class="auth">
+    <div class="auth-form">
+      <div class="inner">
+        <a class="brand" href="#login"><span class="mark" data-icon="flame"></span>TechFire</a>
+        <h1>Criar conta</h1>
+        <p class="muted">Leva menos de um minuto.</p>
+        <div class="msg" id="signupMsg" role="alert"></div>
+        <form id="signupForm" novalidate>
+          <label class="field"><span>Nome completo</span>
+            <div class="input"><span data-icon="user"></span><input name="nome" placeholder="Seu nome" autocomplete="name" required></div>
+          </label>
+          <label class="field"><span>E-mail</span>
+            <div class="input"><span data-icon="mail"></span><input type="email" name="email" placeholder="seu@email.com" autocomplete="email" required></div>
+          </label>
+          <label class="field"><span>Você é</span>
+            <div class="input"><span data-icon="users"></span>
+              <select name="perfil">
+                <option>Brigada de incêndio</option><option>Órgão ambiental</option><option>Produtor rural</option><option>Defesa Civil</option><option>Estudante / avaliador</option>
+              </select></div>
+          </label>
+          <label class="field"><span>Senha</span>
+            <div class="input"><span data-icon="lock"></span><input type="password" name="senha" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" required>
+              <button type="button" class="peek" aria-label="Mostrar senha"><span data-icon="eye"></span></button></div>
+          </label>
+          <label class="field"><span>Confirmar senha</span>
+            <div class="input"><span data-icon="lock"></span><input type="password" name="senha2" placeholder="Repita a senha" autocomplete="new-password" required></div>
+          </label>
+          <label class="check"><input type="checkbox" name="termos"> Concordo com o uso dos meus dados para acesso ao sistema.</label>
+          <button class="btn btn-fire btn-block" type="submit">Criar conta</button>
+        </form>
+        <div class="auth-links"><span class="muted">Já tem conta?</span><a href="#login">Entrar</a></div>
+      </div>
+    </div>
+    <div class="auth-side">
+      <button class="icon-btn theme-btn auth-top" data-theme-toggle aria-label="Alternar modo claro/escuro">
+        <span class="moon" data-icon="moon"></span><span class="sun" data-icon="sun"></span>
+      </button>
+      <div class="scope"><canvas data-thermal></canvas>
+        <div class="hud"><div class="tl"><span class="rec">Detecção por IA</span></div><div class="tr" data-hot>--</div><div class="bl"><span class="scale"></span></div><div class="br">GuardFlame 1.0</div></div>
+      </div>
+      <div class="facts">
+        <div><b>24/7</b><span>monitoramento contínuo</span></div>
+        <div><b>GPS</b><span>localização exata de cada foco</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOME ================= -->
+<section class="page" data-page="home" data-title="Início">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1><span class="sub">TechFire apresenta</span>GuardFlame 1.0</h1>
+        <p class="lead">Um drone com câmera de 12 MP, inteligência artificial e GPS que encontra focos de incêndio florestal no começo, quando ainda dá para apagar, e transmite tudo ao vivo pela rede 4G.</p>
+        <div class="ctas">
+          <a class="btn btn-fire" href="#aovivo"><span data-icon="radio"></span>Assistir ao vivo</a>
+          <a class="btn btn-line" href="#manual">Como funciona</a>
+        </div>
+        <div class="readout">
+          <div><b class="num">95%</b><span>precisão</span></div>
+          <div><b class="num">10x</b><span>mais rápido</span></div>
+          <div><b class="num">24/7</b><span>em operação</span></div>
+        </div>
+      </div>
+      <div class="scope"><canvas data-thermal data-main></canvas>
+        <div class="hud">
+          <div class="tl"><span class="rec">Mapa de detecção · simulação</span></div>
+          <div class="tr" data-hot>--</div>
+          <div class="bl"><span class="scale"></span><span>Risco baixo</span><span>alto</span></div>
+          <div class="br num" data-tel="gps">-23.5505, -46.6333</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Monitoramento em tempo real</h2><p class="muted">Tudo o que o drone capta chega ao painel em segundos.</p></div>
+      <div class="grid g4">
+        <div class="card"><div class="ic" data-icon="eye"></div><h3>Detecção por imagem</h3><p class="muted">A câmera Arducam de 12 MP e a IA no Raspberry Pi reconhecem fogo e fumaça na imagem.</p></div>
+        <div class="card"><div class="ic" data-icon="pin"></div><h3>GPS preciso</h3><p class="muted">Cada foco vem com latitude e longitude para a equipe ir direto ao ponto.</p></div>
+        <div class="card"><div class="ic" data-icon="wifi"></div><h3>Transmissão 4G</h3><p class="muted">O modem 4G envia o vídeo e os alertas mesmo longe de qualquer Wi-Fi.</p></div>
+        <div class="card"><div class="ic" data-icon="mic"></div><h3>Comunicação por voz</h3><p class="muted">Alto-falantes avisam quem está na área, e o drone entende comandos de voz.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head"><h2>Diferenciais</h2><p class="muted">Por que o GuardFlame é diferente de uma torre de vigilância.</p></div>
+      <div class="grid g3">
+        <div class="card"><div class="ic leaf" data-icon="coins"></div><h3>Baixo custo</h3><p class="muted">Feito com Raspberry Pi, Pixhawk e peças acessíveis, custa uma fração dos sistemas comerciais.</p></div>
+        <div class="card"><div class="ic leaf" data-icon="drone"></div><h3>Vai até o fogo</h3><p class="muted">Sobrevoa áreas de difícil acesso que câmeras fixas não alcançam.</p></div>
+        <div class="card"><div class="ic leaf" data-icon="zap"></div><h3>Fácil de operar</h3><p class="muted">Um painel simples, pensado para quem está em campo, não para técnicos.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section tight">
+    <div class="wrap">
+      <div class="section-head"><h2>Para quem é</h2></div>
+      <div class="audience">
+        <div><div class="ic" data-icon="building"></div><h3>Órgãos ambientais</h3><p class="muted">Fiscalização de reservas e parques.</p></div>
+        <div><div class="ic" data-icon="shield"></div><h3>Brigadas de incêndio</h3><p class="muted">Resposta mais rápida e segura.</p></div>
+        <div><div class="ic" data-icon="tree"></div><h3>Produtores rurais</h3><p class="muted">Proteção de lavouras e pastagens.</p></div>
+        <div><div class="ic" data-icon="users"></div><h3>Defesa Civil</h3><p class="muted">Informação confiável para decidir.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="goal">
+        <div><h2>Objetivo</h2><p>Reduzir o tempo entre o início de um foco e a chegada da brigada, diminuindo a área queimada e os danos à fauna, à flora e às pessoas.</p></div>
+        <div class="stats"><div><b>10x</b><span>mais rápido</span></div><div><b>95%</b><span>precisão</span></div><div><b>24/7</b><span>operação</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AO VIVO + VÍDEOS ================= -->
+<section class="page" data-page="aovivo" data-title="Ao vivo">
+  <div class="wrap page-title">
+    <h1>Voo ao vivo</h1>
+    <p>Imagem da câmera do drone em tempo real e telemetria do voo. Abaixo ficam os voos gravados.</p>
+  </div>
+  <div class="section tight">
+    <div class="wrap live-grid">
+      <div><div class="player" id="livePlayer"><span class="live-badge" id="liveBadge">AO VIVO</span></div><div id="liveActions" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"></div></div>
+      <div class="card">
+        <h3>Telemetria</h3>
+        <p class="muted" style="font-size:.85rem" id="telNote">Dados simulados para demonstração.</p>
+        <div class="tel">
+          <div><span>Status</span><b data-tel="status">Em voo</b></div>
+          <div><span>Bateria</span><b data-tel="bat">87%</b></div>
+          <div><span>Altitude</span><b data-tel="alt">60 m</b></div>
+          <div><span>Velocidade</span><b data-tel="vel">8 km/h</b></div>
+          <div><span>Detecção</span><b data-tel="tmax">--</b></div>
+          <div><span>Rede</span><b data-tel="sinal">4G</b></div>
+        </div>
+        <p style="margin:14px 0 0;font-size:.85rem" class="muted">Posição: <b class="num" data-tel="gps">--</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Voos gravados</h2><p class="muted">Gravações dos testes de campo do GuardFlame.</p></div>
+      <div class="grid g3" id="recordedList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANUAL ================= -->
+<section class="page" data-page="manual" data-title="Manual">
+  <div class="wrap page-title"><h1>Manual de operação</h1><p>Do drone desligado ao relatório final, em oito passos.</p></div>
+  <div class="section tight"><div class="wrap"><div class="steps" id="stepsList"></div></div></div>
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Vídeo demonstrativo</h2><p class="muted">Assista ao passo a passo completo.</p></div>
+      <div style="max-width:860px"><div class="player" data-video="manual"></div></div>
+    </div>
+  </div>
+  <div class="section tight">
+    <div class="wrap grid g3">
+      <div class="card"><div class="ic" data-icon="mail"></div><h3>Suporte técnico</h3><p class="muted">Dúvidas na operação? Fale com a equipe pela página Quem somos.</p></div>
+      <div class="card"><div class="ic" data-icon="clock"></div><h3>Tempo de resposta</h3><p class="muted">Respondemos em até 24 horas úteis.</p></div>
+      <div class="card"><div class="ic" data-icon="file"></div><h3>Atualizações</h3><p class="muted">Este manual acompanha a versão 1.0 do sistema.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUTO ================= -->
+<section class="page" data-page="produto" data-title="Produto">
+  <div class="wrap page-title"><h1>Componentes do sistema</h1><p>As peças que formam o GuardFlame 1.0 e o valor aproximado de cada uma no mercado brasileiro.</p></div>
+  <div class="section tight"><div class="wrap"><div class="grid g4" id="prodList"></div></div></div>
+  <div class="section tight">
+    <div class="wrap">
+      <div class="kit">
+        <div class="info">
+          <span class="tag">Kit completo</span>
+          <h2 style="margin-top:12px">GuardFlame 1.0</h2>
+          <ul><li>Drone F450 montado e calibrado com Pixhawk 2.4.8</li><li>Câmera Arducam IMX708 de 12 MP com foco automático</li><li>Raspberry Pi 4 com modem 4G para transmissão ao vivo</li><li>Sistema de áudio com reconhecimento de voz</li><li>Acesso ao painel de monitoramento</li></ul>
+          <p class="muted" style="margin:0">soma estimada dos componentes</p>
+          <div class="big num" id="kitPrice">R$ 2.800,00</div>
+          <div class="ctas" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+            <a class="btn btn-fire" href="#equipe">Solicitar orçamento</a>
+            <a class="btn btn-line" href="#manual">Ver manual</a>
+          </div>
+        </div>
+        <div class="art"><span data-icon="drone"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUEM SOMOS ================= -->
+<section class="page" data-page="equipe" data-title="Quem somos">
+  <div class="wrap page-title"><h1>Nossa equipe</h1><p>Os estudantes por trás do TechFire GuardFlame.</p></div>
+  <div class="section tight"><div class="wrap"><div class="grid g4" id="teamList"></div></div></div>
+  <div class="section alt">
+    <div class="wrap" style="max-width:820px">
+      <h2>Sobre o projeto</h2>
+      <p id="aboutText"></p>
+      <p class="muted">Os incêndios florestais destroem milhões de hectares todos os anos no Brasil. Quanto antes um foco é encontrado, menor o estrago. O GuardFlame une drone, câmera com inteligência artificial, GPS, internet 4G e um painel online para encurtar esse tempo.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="wrap" style="max-width:620px">
+      <div class="section-head center"><div class="ic" style="margin-inline:auto" data-icon="mail"></div><h2>Entre em contato</h2><p class="muted">Dúvidas, orçamento ou parceria.</p></div>
+      <form class="card" id="contactForm">
+        <label class="field"><span>Nome</span><div class="input"><span data-icon="user"></span><input name="nome" required placeholder="Seu nome"></div></label>
+        <label class="field"><span>E-mail</span><div class="input"><span data-icon="mail"></span><input name="email" type="email" required placeholder="seu@email.com"></div></label>
+        <label class="field"><span>Mensagem</span><textarea name="msg" required placeholder="Escreva sua mensagem"></textarea></label>
+        <button class="btn btn-fire btn-block" type="submit">Enviar mensagem</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REFERÊNCIAS ================= -->
+<section class="page" data-page="referencias" data-title="Referências">
+  <div class="wrap page-title"><h1>Referências bibliográficas</h1><p>Livros, artigos e sites que embasaram o projeto.</p></div>
+  <div class="section tight"><div class="wrap" id="refList"></div></div>
+</section>
+
+<!-- ================= JOGO ================= -->
+<section class="page" data-page="jogo" data-title="Jogo">
+  <div class="wrap page-title"><span class="tag amber"><span data-icon="gamepad"></span>Jogo educativo</span><h1 style="margin-top:14px">Firetech: Wildfire Protocol</h1><p>Aprenda a combater incêndios florestais no comando do robô A.R.B.O.R.</p></div>
+  <div class="section tight">
+    <div class="wrap game-hero">
+      <div class="card">
+        <h2 style="font-size:1.6rem">A história</h2>
+        <p>Em 2035, as florestas brasileiras enfrentam a pior temporada de queimadas da história. A.R.B.O.R. é um robô criado para proteger a mata: ele detecta o calor, rastreia os focos e protege os animais antes que as chamas avancem.</p>
+        <p class="muted">Cada fase é baseada em situações reais de combate a incêndio e ensina como a tecnologia ajuda a prevenir desastres.</p>
+        <h3 style="margin-top:24px">Habilidades do A.R.B.O.R.</h3>
+        <div class="abil"><div class="ic" data-icon="thermo"></div><div><b>Visão térmica</b><p class="muted" style="margin:0">Enxerga focos escondidos pela fumaça.</p></div></div>
+        <div class="abil"><div class="ic leaf" data-icon="pin"></div><div><b>Rastreamento GPS</b><p class="muted" style="margin:0">Marca no mapa cada foco encontrado.</p></div></div>
+        <div class="abil"><div class="ic" data-icon="zap"></div><div><b>Pulso de contenção</b><p class="muted" style="margin:0">Cria barreiras para o fogo não se espalhar.</p></div></div>
+      </div>
+      <div>
+        <div class="player" data-video="jogo"></div>
+        <p class="muted" style="font-size:.88rem;margin-top:10px">Prévia do gameplay</p>
+      </div>
+    </div>
+  </div>
+  <div class="section tight">
+    <div class="wrap">
+      <div class="goal">
+        <div><h2>Pronto para a missão?</h2><p>Ajude o A.R.B.O.R. a salvar a floresta.</p></div>
+        <div><a class="btn" style="background:#fff;color:var(--fire)" id="playBtn" target="_blank" rel="noopener"><span data-icon="play"></span>Jogar agora</a></div>
+      </div>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="card"><span class="muted">Plataforma</span><h3 style="margin:4px 0 0">Navegador (PC)</h3></div>
+        <div class="card"><span class="muted">Gênero</span><h3 style="margin:4px 0 0">Ação educativa</h3></div>
+        <div class="card"><span class="muted">Classificação</span><h3 style="margin:4px 0 0">Livre</h3></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIÊNCIA (UX) ================= -->
+<section class="page" data-page="ux" data-title="Experiência">
+  <div class="wrap page-title"><h1>Experiência do usuário</h1><p>Como uma pessoa usa o GuardFlame, do cadastro ao relatório.</p></div>
+  <div class="section tight"><div class="wrap"><h2 style="font-size:1.5rem">Jornada do usuário</h2><div class="journey" id="journeyList"></div></div></div>
+
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Painel de monitoramento</h2><p class="muted">O que o operador vê durante o voo.</p></div>
+      <div class="dash">
+        <div class="map" id="mapBox"></div>
+        <div class="grid" style="align-content:start">
+          <div class="card"><span class="muted">Status</span><h3 style="margin:2px 0 0;color:var(--leaf)" data-tel="status">Em voo</h3></div>
+          <div class="card"><span class="muted">Bateria</span><h3 style="margin:2px 0 0" class="num" data-tel="bat">87%</h3></div>
+          <div class="card"><span class="muted">Altitude</span><h3 style="margin:2px 0 0" class="num" data-tel="alt">60 m</h3></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h3>Nível de risco detectado nas últimas 24 horas</h3>
+        <div class="bars" id="bars" role="img" aria-label="Gráfico do nível de risco por hora"></div>
+        <div style="display:flex;justify-content:space-between;font-size:.78rem" class="muted"><span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>23h</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head center"><h2>Exemplo de alerta</h2></div>
+      <div class="alert">
+        <h3><span data-icon="bell"></span>Possível foco de incêndio detectado</h3>
+        <dl>
+          <dt>Localização</dt><dd class="num">-23.5612, -46.6401</dd>
+          <dt>Confiança da IA</dt><dd class="num">94%</dd><dt>Indício</dt><dd>Chamas e fumaça na imagem</dd>
+          <dt>Horário</dt><dd class="num" id="alertTime">--</dd>
+          <dt>Área estimada</dt><dd>cerca de 40 m²</dd>
+        </dl>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-fire btn-sm" data-toast="Brigada acionada">Acionar brigada</button>
+          <button class="btn btn-line btn-sm" data-toast="Aviso sonoro emitido pelo drone">Emitir aviso sonoro</button><button class="btn btn-line btn-sm" data-toast="Alerta marcado como falso alarme">Marcar como falso alarme</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2>Integração das tecnologias</h2><p class="muted">Como as peças conversam entre si.</p></div>
+      <div class="grid g3">
+        <div class="card"><div class="ic" data-icon="drone"></div><h3>Pixhawk 2.4.8</h3><p class="muted">Controla o voo, lê o GPS e envia a telemetria ao Raspberry Pi pelo protocolo MAVLink.</p></div>
+        <div class="card"><div class="ic" data-icon="chip"></div><h3>Raspberry Pi 4</h3><p class="muted">O cérebro da missão: analisa a imagem, transmite o vídeo e cuida do áudio.</p></div>
+        <div class="card"><div class="ic" data-icon="eye"></div><h3>Arducam IMX708</h3><p class="muted">Câmera de 12 MP com foco automático que filma e alimenta a IA.</p></div>
+        <div class="card"><div class="ic" data-icon="pin"></div><h3>GPS NEO-6M</h3><p class="muted">Dá a posição do drone e de cada foco encontrado.</p></div>
+        <div class="card"><div class="ic" data-icon="mic"></div><h3>Áudio e voz</h3><p class="muted">Microfone, módulo de voz e alto-falantes com o MAX98357A.</p></div>
+        <div class="card"><div class="ic" data-icon="radio"></div><h3>Modem 4G</h3><p class="muted">Leva o vídeo e os alertas para a internet.</p></div>
+        <div class="card"><div class="ic" data-icon="db"></div><h3>Site e banco de dados</h3><p class="muted">Mostra tudo em tempo real e guarda as ocorrências.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head"><h2>Histórico de ocorrências</h2></div>
+      <div class="table-wrap"><table><thead><tr><th>Data e hora</th><th>Localização</th><th>Confiança da IA</th><th>Situação</th></tr></thead><tbody id="histBody"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ================= RODAPÉ ================= -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="cols">
+      <div><a class="brand" href="#home" style="color:var(--ink);padding:0"><span class="mark" data-icon="flame"></span>TechFire</a><p class="muted" style="margin-top:12px;max-width:34ch" id="footAbout"></p></div>
+      <div><h4>Páginas</h4><a href="#home">Início</a><a href="#aovivo">Ao vivo</a><a href="#manual">Manual</a><a href="#produto">Produto</a></div>
+      <div><h4>Projeto</h4><a href="#equipe">Quem somos</a><a href="#referencias">Referências</a><a href="#jogo">Jogo</a><a href="#ux">Experiência</a></div>
+    </div>
+    <div class="copy" id="copyLine"></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO — É SÓ EDITAR AQUI
+   ===================================================================== */
+const CONFIG = {
+  escola: "Nome da sua escola",
+  ano: 2026,
+  emailContato: "contato@techfire.com",   // para onde o formulário de contato envia
+  exigirLogin: true,                       // false = o site abre sem precisar entrar
+
+  /* ---------- AO VIVO ----------
+     tipo: "youtube"  -> live do YouTube (mais fácil, funciona em qualquer hospedagem)
+           "hls"      -> link .m3u8 (servidor próprio, MediaMTX, etc.)
+           "mjpeg"    -> câmera do Raspberry Pi na mesma rede (mjpg-streamer / motion)
+           "twitch"   -> canal da Twitch (coloque o nome em twitchCanal)
+           "nenhum"   -> mostra o mapa de detecção simulado                       */
+  aoVivo: {
+    tipo: "nenhum",
+    twitchCanal: "",        // nome do canal, ex.: "techfire_guardflame"
+    youtubeId: "",          // ID do vídeo da live, ex.: "dQw4w9WgXcQ"
+    youtubeCanal: "",       // OU o ID do canal (UC...), mostra a live atual do canal
+    hlsUrl: "",             // ex.: "https://seu-servidor/drone/index.m3u8"
+    mjpegUrl: ""            // ex.: "http://192.168.0.50:8080/?action=stream"
+  },
+  telemetriaSimulada: true,
+
+  /* ---------- VÍDEOS GRAVADOS ----------
+     Use "arquivo" (MP4 na pasta videos/) OU "youtube" (ID do vídeo).          */
+  videos: [
+    { titulo: "Primeiro voo de teste",   descricao: "Calibração e decolagem.",           arquivo: "videos/voo-01.mp4", capa: "", youtube: "" },
+    { titulo: "Detecção de foco",        descricao: "A IA marca o fogo e a fumaça na imagem.", arquivo: "videos/voo-02.mp4", capa: "", youtube: "" },
+    { titulo: "Voo de patrulha",         descricao: "Rota completa sobre a área de teste.", arquivo: "videos/voo-03.mp4", capa: "", youtube: "" }
+  ],
+  videoManual: { arquivo: "videos/manual.mp4", youtube: "" },
+  videoJogo:   { arquivo: "videos/jogo.mp4",   youtube: "" },
+  linkJogo: "#",            // link para jogar (itch.io, GitHub Pages, etc.)
+
+  /* ---------- EQUIPE ---------- (foto: "img/nome.jpg" ou deixe vazio) */
+  equipe: [
+    { nome: "Integrante 1", funcao: "Programação e banco de dados", foto: "" },
+    { nome: "Integrante 2", funcao: "Hardware e montagem do drone",  foto: "" },
+    { nome: "Integrante 3", funcao: "Design e site",                 foto: "" },
+    { nome: "Integrante 4", funcao: "Pesquisa e documentação",       foto: "" }
+  ],
+  sobre: "O TechFire GuardFlame é um Trabalho de Conclusão de Curso: um drone F450 com controladora Pixhawk, Raspberry Pi 4, câmera Arducam de 12 MP, GPS e internet 4G que detecta focos de incêndio florestal, transmite o voo ao vivo e avisa as pessoas da área por voz.",
+
+  precoKit: "",   // vazio = soma automática dos componentes
+  mapa: { lat: -23.5505, lon: -46.6333 }   // posição inicial do drone no mapa
+};
+
+/* ---------- DADOS DAS PÁGINAS ---------- */
+const PASSOS = [
+  ["Ligar o drone", "Encaixe a bateria LiPo 4S. A Pixhawk faz os bipes de inicialização e o Raspberry Pi liga junto, alimentado pelo BEC.", "Tempo: 1 min"],
+  ["Conectar ao sistema", "O modem 4G conecta o Raspberry Pi à internet sozinho. Entre no painel do site com seu e-mail e senha.", "Internet 4G"],
+  ["Iniciar a missão", "Defina a rota da área no Mission Planner ou QGroundControl e decole. A Pixhawk segue o trajeto pelo GPS.", "Altitude: 50–80 m"],
+  ["Visualizar GPS", "Acompanhe a posição do drone no mapa, enviada pela Pixhawk a cada segundo.", "GPS NEO-6M"],
+  ["Acompanhar a câmera", "Assista ao vídeo ao vivo da câmera de 12 MP. A IA marca na imagem tudo que parece fogo ou fumaça.", "Ao vivo"],
+  ["Receber alertas", "Ao detectar um foco, o painel mostra o alerta com o local, a confiança da IA e o horário.", "Alerta em segundos"],
+  ["Avisar por voz", "Use os alto-falantes do drone para orientar quem está na área. O drone também obedece comandos de voz treinados.", "Áudio"],
+  ["Consultar relatórios", "Veja o histórico de voos e ocorrências para planejar a prevenção.", "Banco de dados"]
+];
+
+/* Valores aproximados de mercado (2026). Troque pelos que vocês pagaram. */
+const PRODUTOS = [
+  { n: "Frame F450", d: "Estrutura do drone, com placa de distribuição de energia integrada.", s: ["450 mm entre eixos", "Braços de nylon reforçado", "Suporta hélices de até 10\""], p: 120, c: "#4B5563", i: "drone" },
+  { n: "Motores brushless (x4)", d: "Geram a sustentação e o movimento do drone.", s: ["Sem escovas, longa vida útil", "Um por braço", "Sentidos horário e anti-horário"], p: 240, c: "#0891B2", i: "zap" },
+  { n: "ESCs 60 A (x4)", d: "Controlam a velocidade de cada motor a partir da Pixhawk.", s: ["Corrente de 60 A", "Compatível com 4S", "Sobra de potência e segurança"], p: 320, c: "#7C3AED", i: "zap" },
+  { n: "Bateria LiPo 4S", d: "Fonte de energia de todo o drone.", s: ["14,8 V nominal", "Alta descarga", "Conector XT60"], p: 450, c: "#CA8A04", i: "battery" },
+  { n: "Pixhawk 2.4.8", d: "Controladora de voo: estabiliza o drone e executa a rota.", s: ["Processador ARM de 32 bits", "Firmware ArduPilot ou PX4", "Giroscópio, barômetro e bússola"], p: 750, c: "#DC2626", i: "chip" },
+  { n: "Raspberry Pi 4", d: "Processa a imagem com IA, transmite o vídeo e cuida do áudio.", s: ["4 núcleos de 1,5 GHz", "Codificador de vídeo H.264", "Wi-Fi, Bluetooth e USB 3.0"], p: 650, c: "#DB2777", i: "chip" },
+  { n: "Câmera Arducam IMX708", d: "Filma o voo e alimenta a detecção de fogo e fumaça.", s: ["12 MP (4608×2592)", "Foco automático PDAF", "Modo HDR"], p: 350, c: "#EA580C", i: "eye" },
+  { n: "GPS NEO-6M", d: "Informa a posição do drone e de cada foco.", s: ["Ligado à Pixhawk", "Precisão de ~2,5 m", "Antena cerâmica"], p: 60, c: "#16A34A", i: "pin" },
+  { n: "Modem 4G USB", d: "Conecta o drone à internet durante o voo.", s: ["Ligado no USB do Pi", "Usa chip de celular", "Envia vídeo e alertas"], p: 180, c: "#2563EB", i: "radio" },
+  { n: "Microfone USB", d: "Capta o som ao redor do drone.", s: ["Plug and play no Pi", "Áudio na transmissão", "Escuta pedidos de ajuda"], p: 40, c: "#059669", i: "mic" },
+  { n: "Alto-falantes (x2)", d: "Emitem avisos sonoros para quem está na área.", s: ["4 a 8 Ω", "Avisos de evacuação", "Leves e compactos"], p: 30, c: "#9333EA", i: "speaker" },
+  { n: "Amplificador MAX98357A", d: "Recebe o áudio digital do Pi e aciona o alto-falante.", s: ["Até 3,2 W em 4 Ω", "Entrada I2S digital", "Classe D, mono"], p: 35, c: "#BE185D", i: "speaker" },
+  { n: "Módulo de reconhecimento de voz", d: "Reconhece comandos falados sem precisar de internet.", s: ["Até 80 comandos gravados", "7 ativos ao mesmo tempo", "Comunicação serial (UART)"], p: 150, c: "#0D9488", i: "mic" },
+  { n: "BEC", d: "Reduz a tensão da bateria para os 5 V do Raspberry Pi.", s: ["Saída de 5 V", "Protege a eletrônica", "Alimenta o Pi no ar"], p: 40, c: "#475569", i: "power" },
+  { n: "Hélices", d: "Transformam o giro dos motores em sustentação.", s: ["Pares horário e anti-horário", "Tamanho para F450", "Tenha peças reserva"], p: 40, c: "#65A30D", i: "drone" },
+  { n: "Cabos e conectores", d: "Ligam todas as partes do sistema.", s: ["XT60, JST e jumpers", "Cabo flat da câmera", "Termorretrátil"], p: 80, c: "#57534E", i: "link" }
+];
+const brl = (v) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+const REFS = [
+  { cat: "Drones e tecnologia UAV", icon: "drone", itens: [
+    ["VALAVANIS, K. P.; VACHTSEVANOS, G. J. (org.).", "Handbook of Unmanned Aerial Vehicles. Dordrecht: Springer, 2015.", ""],
+    ["YUAN, C.; ZHANG, Y.; LIU, Z.", "A survey on technologies for automatic forest fire monitoring, detection, and fighting using unmanned aerial vehicles and remote sensing techniques. Canadian Journal of Forest Research, v. 45, n. 7, 2015.", ""]
+  ]},
+  { cat: "Pixhawk e controle de voo", icon: "chip", itens: [
+    ["ARDUPILOT.", "ArduPilot Copter Documentation.", "https://ardupilot.org/copter/"],
+    ["PX4.", "PX4 Autopilot User Guide.", "https://docs.px4.io/"]
+  ]},
+  { cat: "Raspberry Pi e câmera", icon: "eye", itens: [
+    ["UPTON, E.; HALFACREE, G.", "Raspberry Pi: manual do usuário. São Paulo: Novatec, 2013.", ""],
+    ["RASPBERRY PI LTD.", "Camera software documentation.", "https://www.raspberrypi.com/documentation/computers/camera_software.html"],
+    ["ARDUCAM.", "12MP IMX708 Camera Module documentation.", "https://docs.arducam.com/Raspberry-Pi-Camera/Native-camera/12MP-IMX708/"]
+  ]},
+  { cat: "Visão computacional", icon: "eye", itens: [
+    ["OPENCV.", "OpenCV Documentation.", "https://docs.opencv.org/"],
+    ["ALLISON, R. S. et al.", "Airborne optical and thermal remote sensing for wildfire detection and monitoring. Sensors, v. 16, n. 8, 2016.", ""]
+  ]},
+  { cat: "Sistemas GPS", icon: "pin", itens: [
+    ["KAPLAN, E. D.; HEGARTY, C. J.", "Understanding GPS/GNSS: principles and applications. 3. ed. Boston: Artech House, 2017.", ""]
+  ]},
+  { cat: "Áudio e reconhecimento de voz", icon: "mic", itens: [
+    ["ADAFRUIT.", "Adafruit MAX98357 I2S Class-D Mono Amp.", "https://learn.adafruit.com/adafruit-max98357-i2s-class-d-mono-amp"],
+    ["ELECHOUSE.", "Voice Recognition Module V3 – manual.", "https://www.elechouse.com/product/speak-recognition-voice-recognition-module-v3/"]
+  ]},
+  { cat: "Monitoramento ambiental", icon: "tree", itens: [
+    ["INPE – Instituto Nacional de Pesquisas Espaciais.", "Programa Queimadas: monitoramento de focos.", "https://terrabrasilis.dpi.inpe.br/queimadas/portal/"]
+  ]},
+  { cat: "MySQL e banco de dados", icon: "db", itens: [
+    ["MILANI, A.", "MySQL: guia do programador. São Paulo: Novatec, 2006.", ""],
+    ["ORACLE.", "MySQL Reference Manual.", "https://dev.mysql.com/doc/"]
+  ]}
+];
+
+const JORNADA = [
+  ["Cadastro", "Cria a conta no site"], ["Login", "Entra no painel"], ["Conexão", "Liga e conecta o drone"], ["Voo", "Define a área e decola"],
+  ["Monitoramento", "Acompanha vídeo e calor"], ["Alerta", "Recebe aviso de foco"], ["Registro", "Confirma a ocorrência"], ["Relatório", "Consulta o histórico"]
+];
+
+const HISTORICO = [
+  ["04/10/2026 14:32", "-23.5612, -46.6401", "94%", "Em atendimento", ""],
+  ["02/10/2026 11:05", "-23.5487, -46.6218", "88%", "Controlado", "leaf"],
+  ["28/09/2026 16:47", "-23.5701, -46.6550", "61%", "Falso alarme", "amber"],
+  ["25/09/2026 09:18", "-23.5399, -46.6102", "97%", "Controlado", "leaf"],
+  ["21/09/2026 15:56", "-23.5823, -46.6489", "90%", "Controlado", "leaf"]
+];
+
+/* =====================================================================
+   ÍCONES
+   ===================================================================== */
+const ICONS = {
+  flame:"M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z",
+  thermo:"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z",
+  pin:"M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0ZM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  bell:"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0",
+  db:"M3 5c0-1.7 4-3 9-3s9 1.3 9 3-4 3-9 3-9-1.3-9-3zM3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3",
+  sun:"M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41",
+  moon:"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z",
+  play:"M6 3l14 9-14 9V3z",
+  eye:"M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",
+  mail:"M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM22 6l-10 7L2 6",
+  lock:"M5 11h14v10H5zM7 11V7a5 5 0 0 1 10 0v4",
+  user:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+  users:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
+  menu:"M4 6h16M4 12h16M4 18h16",
+  battery:"M2 7h16v10H2zM22 11v2",
+  wifi:"M5 12.55a11 11 0 0 1 14 0M8.5 16.43a6 6 0 0 1 7 0M12 20h.01M2 8.82a15 15 0 0 1 20 0",
+  chip:"M6 6h12v12H6zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4",
+  shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  gamepad:"M6 12h4M8 10v4M15 13h.01M18 11h.01M17.32 5H6.68a4 4 0 0 0-3.98 3.59L2 15a3 3 0 0 0 5 2l2-2h6l2 2a3 3 0 0 0 5-2l-.7-6.41A4 4 0 0 0 17.32 5z",
+  drone:"M3 6a3 3 0 1 0 6 0 3 3 0 1 0-6 0M15 6a3 3 0 1 0 6 0 3 3 0 1 0-6 0M3 18a3 3 0 1 0 6 0 3 3 0 1 0-6 0M15 18a3 3 0 1 0 6 0 3 3 0 1 0-6 0M10 10h4v4h-4zM8 8l2 2M16 8l-2 2M8 16l2-2M16 16l-2-2",
+  tree:"M12 2 5 12h4l-3 5h12l-3-5h4zM12 17v5",
+  building:"M4 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18M16 9h3a2 2 0 0 1 2 2v11M2 22h20M8 6h4M8 10h4M8 14h4",
+  clock:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2",
+  coins:"M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
+  radio:"M4.9 19.1a10 10 0 0 1 0-14.2M7.8 16.2a6 6 0 0 1 0-8.4M16.2 7.8a6 6 0 0 1 0 8.4M19.1 4.9a10 10 0 0 1 0 14.2M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+  logout:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9",
+  file:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8",
+  zap:"M13 2 3 14h9l-1 8 10-12h-9l1-8z",
+  mic:"M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3zM19 10v2a7 7 0 0 1-14 0v-2M12 19v3",
+  speaker:"M11 5 6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14",
+  power:"M12 2v10M18.4 6.6a9 9 0 1 1-12.8 0",
+  link:"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+};
+const icon = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[n] || ""}"/></svg>`;
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+function fillIcons(root = document) { $$("[data-icon]", root).forEach(el => { el.innerHTML = icon(el.dataset.icon); el.removeAttribute("data-icon"); }); }
+function toast(t) { const el = $("#toast"); el.textContent = t; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2600); }
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+/* =====================================================================
+   TEMA CLARO / ESCURO
+   ===================================================================== */
+function toggleTheme() {
+  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem("gf_tema", next); } catch (e) {}
+}
+$$("[data-theme-toggle]").forEach(b => b.addEventListener("click", toggleTheme));
+
+/* =====================================================================
+   LOGIN E CADASTRO
+   Obs.: guarda as contas no navegador (localStorage) — ótimo para a
+   apresentação. Para contas reais, troque por Firebase/MySQL (ver guia).
+   ===================================================================== */
+async function hashSenha(s) {
+  if (window.crypto && crypto.subtle) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("gf::" + s));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+  return btoa(unescape(encodeURIComponent("gf::" + s)));
+}
+const sessao = () => store.get("gf_sessao", null);
+function showMsg(id, text, ok) { const m = $(id); m.textContent = text; m.className = "msg " + (ok ? "ok" : "err"); }
+const emailOk = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+$("#signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target, nome = f.nome.value.trim(), email = f.email.value.trim().toLowerCase();
+  if (nome.length < 3) return showMsg("#signupMsg", "Digite seu nome completo.");
+  if (!emailOk(email)) return showMsg("#signupMsg", "Digite um e-mail válido, como nome@email.com.");
+  if (f.senha.value.length < 6) return showMsg("#signupMsg", "A senha precisa ter pelo menos 6 caracteres.");
+  if (f.senha.value !== f.senha2.value) return showMsg("#signupMsg", "As senhas não são iguais. Digite novamente.");
+  if (!f.termos.checked) return showMsg("#signupMsg", "Marque a caixa de concordância para continuar.");
+  const users = store.get("gf_usuarios", {});
+  if (users[email]) return showMsg("#signupMsg", "Este e-mail já tem conta. Use a opção Entrar.");
+  users[email] = { nome, perfil: f.perfil.value, senha: await hashSenha(f.senha.value), criado: Date.now() };
+  store.set("gf_usuarios", users);
+  store.set("gf_sessao", { nome, email });
+  f.reset(); toast("Conta criada. Bem-vindo(a), " + nome.split(" ")[0] + "!");
+  location.hash = "#home";
+});
+
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.target, email = f.email.value.trim().toLowerCase();
+  if (!emailOk(email)) return showMsg("#loginMsg", "Digite um e-mail válido.");
+  const u = store.get("gf_usuarios", {})[email];
+  if (!u || u.senha !== await hashSenha(f.senha.value)) return showMsg("#loginMsg", "E-mail ou senha incorretos. Confira e tente de novo.");
+  store.set("gf_sessao", { nome: u.nome, email });
+  f.reset(); $("#loginMsg").className = "msg";
+  location.hash = "#home";
+});
+
+$("#demoBtn").addEventListener("click", () => { store.set("gf_sessao", { nome: "Visitante", email: "visitante" }); location.hash = "#home"; });
+$("#forgotBtn").addEventListener("click", () => {
+  const email = $("#loginForm").email.value.trim().toLowerCase();
+  if (!emailOk(email)) return showMsg("#loginMsg", "Digite seu e-mail no campo acima e clique em Recuperar senha.");
+  showMsg("#loginMsg", "Se existir uma conta com " + email + ", enviaremos as instruções de recuperação.", true);
+});
+$("#logoutBtn").addEventListener("click", () => { store.del("gf_sessao"); toast("Você saiu da conta."); location.hash = "#login"; });
+$$(".peek").forEach(b => b.addEventListener("click", () => {
+  const inp = b.parentElement.querySelector("input"); const show = inp.type === "password";
+  inp.type = show ? "text" : "password"; b.setAttribute("aria-label", show ? "Esconder senha" : "Mostrar senha");
+}));
+
+/* =====================================================================
+   ROTAS (páginas)
+   ===================================================================== */
+const PUBLICAS = ["login", "cadastro"];
+function route() {
+  let r = location.hash.slice(1) || (CONFIG.exigirLogin ? "login" : "home");
+  if (!$(`[data-page="${r}"]`)) r = "home";
+  const s = sessao();
+  if (CONFIG.exigirLogin && !s && !PUBLICAS.includes(r)) r = "login";
+  if (s && PUBLICAS.includes(r)) r = "home";
+  $$(".page").forEach(p => p.classList.toggle("active", p.dataset.page === r));
+  document.body.classList.toggle("is-auth", PUBLICAS.includes(r));
+  $$("#nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + r));
+  $("#userChip").textContent = s ? "Olá, " + s.nome.split(" ")[0] : "";
+  $("#logoutBtn").style.display = s ? "" : "none";
+  $("#nav").classList.remove("open"); $("#menuBtn").setAttribute("aria-expanded", "false");
+  document.title = $(`[data-page="${r}"]`).dataset.title + " · TechFire GuardFlame";
+  window.scrollTo(0, 0);
+  if (r === "aovivo") startLive(); else stopLive();
+}
+window.addEventListener("hashchange", route);
+$("#menuBtn").addEventListener("click", () => {
+  const open = $("#nav").classList.toggle("open"); $("#menuBtn").setAttribute("aria-expanded", open);
+});
+
+/* =====================================================================
+   VÍDEOS
+   ===================================================================== */
+function emptyBox(titulo, texto) { return `<div class="empty"><div><b>${titulo}</b>${texto}</div></div>`; }
+function renderVideo(box, v) {
+  if (v.youtube) {
+    box.innerHTML = `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(v.youtube)}?rel=0" title="${esc(v.titulo || "Vídeo")}" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    return;
+  }
+  if (!v.arquivo) { box.innerHTML = emptyBox("Vídeo não configurado", "Adicione o arquivo no CONFIG."); return; }
+  const vid = document.createElement("video");
+  vid.controls = true; vid.preload = "metadata"; vid.playsInline = true;
+  if (v.capa) vid.poster = v.capa;
+  vid.src = v.arquivo;
+  vid.addEventListener("error", () => { box.innerHTML = emptyBox("Vídeo ainda não adicionado", `Coloque o arquivo em <code>${esc(v.arquivo)}</code>`); });
+  box.innerHTML = ""; box.appendChild(vid);
+}
+function renderRecorded() {
+  $("#recordedList").innerHTML = CONFIG.videos.map((v, i) => `
+    <article class="card vid-card"><div class="player" data-rec="${i}"></div><h3>${esc(v.titulo)}</h3><p class="muted">${esc(v.descricao || "")}</p></article>`).join("");
+  $$("[data-rec]").forEach(b => renderVideo(b, CONFIG.videos[+b.dataset.rec]));
+  $$("[data-video]").forEach(b => renderVideo(b, b.dataset.video === "manual" ? CONFIG.videoManual : CONFIG.videoJogo));
+}
+
+/* ---------- AO VIVO ---------- */
+let liveOn = false, hlsObj = null;
+function loadScript(src) { return new Promise((ok, fail) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = fail; document.head.appendChild(s); }); }
+async function startLive() {
+  if (liveOn) return; liveOn = true;
+  const box = $("#livePlayer"), badge = $("#liveBadge"), L = CONFIG.aoVivo;
+  box.querySelectorAll(":not(#liveBadge)").forEach(n => n.remove());
+  const add = (html) => box.insertAdjacentHTML("beforeend", html);
+  const offline = (msg) => { badge.classList.remove("on"); add(`<div class="scope" style="aspect-ratio:auto;height:100%;border-radius:0"><canvas data-thermal></canvas><div class="hud"><div class="tl"><span class="rec">Mapa de detecção · simulação</span></div><div class="tr" data-hot>--</div><div class="bl">${msg}</div></div></div>`); initThermals(box); };
+
+  const acts = $("#liveActions"); acts.innerHTML = "";
+  if (L.tipo === "twitch" && L.twitchCanal) {
+    const canal = encodeURIComponent(L.twitchCanal), host = location.hostname;
+    acts.innerHTML = `<a class="btn btn-fire btn-sm" href="https://www.twitch.tv/${canal}" target="_blank" rel="noopener"><span>${icon("radio")}</span>Abrir na Twitch</a>`;
+    if (host) {
+      add(`<iframe src="https://player.twitch.tv/?channel=${canal}&parent=${encodeURIComponent(host)}&muted=true" title="Transmissão ao vivo do drone na Twitch" allow="autoplay; fullscreen" allowfullscreen></iframe>`);
+      badge.classList.add("on");
+    } else {
+      offline("Publique o site para ver a Twitch aqui — ou use o botão Abrir na Twitch");
+    }
+  } else if (L.tipo === "youtube" && (L.youtubeId || L.youtubeCanal)) {
+    const src = L.youtubeId ? `https://www.youtube.com/embed/${encodeURIComponent(L.youtubeId)}?autoplay=1&mute=1`
+                            : `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(L.youtubeCanal)}&autoplay=1&mute=1`;
+    add(`<iframe src="${src}" title="Transmissão ao vivo do drone" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`);
+    badge.classList.add("on");
+  } else if (L.tipo === "hls" && L.hlsUrl) {
+    add(`<video id="liveVid" muted autoplay playsinline controls></video>`);
+    const v = $("#liveVid");
+    v.addEventListener("error", () => { v.remove(); offline("Transmissão offline — tentando de novo ao reabrir a página"); });
+    if (v.canPlayType("application/vnd.apple.mpegurl")) { v.src = L.hlsUrl; }
+    else {
+      try {
+        if (!window.Hls) await loadScript("https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js");
+        hlsObj = new Hls(); hlsObj.loadSource(L.hlsUrl); hlsObj.attachMedia(v);
+        hlsObj.on(Hls.Events.ERROR, (_, d) => { if (d.fatal) { stopLive(); liveOn = true; offline("Transmissão offline"); } });
+      } catch (e) { v.remove(); offline("Não foi possível carregar o player HLS"); }
+    }
+    badge.classList.add("on");
+  } else if (L.tipo === "mjpeg" && L.mjpegUrl) {
+    const img = new Image(); img.alt = "Câmera do drone ao vivo"; img.src = L.mjpegUrl;
+    img.onerror = () => { img.remove(); offline("Câmera do Raspberry Pi não encontrada na rede"); };
+    box.appendChild(img); badge.classList.add("on");
+  } else {
+    offline("Configure a transmissão em CONFIG.aoVivo");
+  }
+  $("#telNote").textContent = CONFIG.telemetriaSimulada ? "Dados simulados para demonstração." : "Dados recebidos do drone.";
+}
+function stopLive() {
+  if (!liveOn) return; liveOn = false;
+  if (hlsObj) { hlsObj.destroy(); hlsObj = null; }
+  $("#livePlayer").querySelectorAll(":not(#liveBadge)").forEach(n => n.remove()); /* para o vídeo ao sair da página */
+}
+
+/* =====================================================================
+   VISOR TÉRMICO (simulação da câmera térmica)
+   ===================================================================== */
+const PALETA = (() => {
+  const stops = [[0,[10,10,42]],[.25,[74,12,107]],[.45,[176,32,79]],[.62,[232,81,42]],[.8,[249,168,30]],[1,[255,251,224]]];
+  const out = new Uint8ClampedArray(256 * 3);
+  for (let i = 0; i < 256; i++) {
+    const t = i / 255; let k = 0; while (t > stops[k + 1][0]) k++;
+    const [t0, a] = stops[k], [t1, b] = stops[k + 1], f = (t - t0) / (t1 - t0);
+    for (let c = 0; c < 3; c++) out[i * 3 + c] = a[c] + (b[c] - a[c]) * f;
+  }
+  return out;
+})();
+const reduzMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+class Thermal {
+  constructor(canvas) {
+    this.c = canvas; this.ctx = canvas.getContext("2d");
+    this.W = 96; this.H = 64;
+    this.off = document.createElement("canvas"); this.off.width = this.W; this.off.height = this.H;
+    this.octx = this.off.getContext("2d"); this.img = this.octx.createImageData(this.W, this.H);
+    this.hot = canvas.closest(".scope").querySelector("[data-hot]");
+    // textura do solo/copa das árvores (ruído suave)
+    const gx = 13, gy = 9, g = Array.from({ length: gx * gy }, () => Math.random());
+    this.ground = new Float32Array(this.W * this.H);
+    for (let y = 0; y < this.H; y++) for (let x = 0; x < this.W; x++) {
+      const fx = x / this.W * (gx - 1), fy = y / this.H * (gy - 1), ix = fx | 0, iy = fy | 0, tx = fx - ix, ty = fy - iy;
+      const v = g[iy*gx+ix]*(1-tx)*(1-ty) + g[iy*gx+ix+1]*tx*(1-ty) + g[(iy+1)*gx+ix]*(1-tx)*ty + g[(iy+1)*gx+ix+1]*tx*ty;
+      this.ground[y * this.W + x] = .16 + v * .2 + Math.random() * .03;
+    }
+    this.focos = [
+      { x: .66, y: .42, r: 7, calor: .5, fase: 0 },
+      { x: .3, y: .7, r: 4, calor: .35, fase: 2 },
+      { x: .18, y: .25, r: 3, calor: .22, fase: 4 }
+    ];
+    this.visivel = false; this.raf = 0;
+    canvas.addEventListener("wake", () => this.loop());
+    new IntersectionObserver(([e]) => { this.visivel = e.isIntersecting; if (this.visivel) this.loop(); }).observe(canvas);
+    new ResizeObserver(() => this.resize()).observe(canvas);
+  }
+  resize() {
+    const r = this.c.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
+    if (!r.width) return;
+    this.c.width = Math.round(r.width * d); this.c.height = Math.round(r.height * d);
+    this.draw(performance.now());
+  }
+  loop() {
+    cancelAnimationFrame(this.raf);
+    if (!this.visivel || document.hidden || reduzMovimento) { this.draw(performance.now()); return; }
+    let last = 0;
+    const tick = (t) => { if (!this.visivel || document.hidden) return; if (t - last > 70) { this.draw(t); last = t; } this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  draw(t) {
+    const { W, H, img, ground } = this, d = img.data, s = t / 1000;
+    const drift = (s * 1.5) % W; // o drone "anda" sobre a área
+    let max = 0, mx = 0, my = 0;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const gxp = (x + drift | 0) % W;
+      let v = ground[y * W + gxp] + Math.sin(x * .3 + s) * .01;
+      for (const f of this.focos) {
+        let dx = x - ((f.x * W - drift) % W + W) % W; if (dx > W / 2) dx -= W; if (dx < -W / 2) dx += W;
+        const dy = y - f.y * H, flick = 1 + .12 * Math.sin(s * 6 + f.fase + x * .4) * Math.sin(s * 4.3 + y * .5);
+        v += f.calor * flick * Math.exp(-(dx * dx + dy * dy * 1.3) / (f.r * f.r));
+      }
+      v = Math.min(1, Math.max(0, v));
+      if (v > max) { max = v; mx = x; my = y; }
+      const k = (v * 255 | 0) * 3, p = (y * W + x) * 4;
+      d[p] = PALETA[k]; d[p + 1] = PALETA[k + 1]; d[p + 2] = PALETA[k + 2]; d[p + 3] = 255;
+    }
+    this.octx.putImageData(img, 0, 0);
+    const { c, ctx } = this, cw = c.width, ch = c.height;
+    if (!cw) return;
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    // preenche cobrindo o quadro inteiro (object-fit: cover)
+    const sc = Math.max(cw / W, ch / H), dw = W * sc, dh = H * sc, ox = (cw - dw) / 2, oy = (ch - dh) / 2;
+    ctx.drawImage(this.off, ox, oy, dw, dh);
+    // mira no ponto mais quente
+    const px = ox + (mx + .5) * sc, py = oy + (my + .5) * sc, u = Math.max(1, cw / 600), R = 26 * u;
+    ctx.strokeStyle = "rgba(255,255,255,.95)"; ctx.lineWidth = 1.5 * u;
+    ctx.beginPath(); ctx.arc(px, py, R, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px - R * 1.6, py); ctx.lineTo(px - R * .6, py); ctx.moveTo(px + R * .6, py); ctx.lineTo(px + R * 1.6, py);
+    ctx.moveTo(px, py - R * 1.6); ctx.lineTo(px, py - R * .6); ctx.moveTo(px, py + R * .6); ctx.lineTo(px, py + R * 1.6); ctx.stroke();
+    const conf = Math.round(Math.min(99, Math.max(0, (max - .35) / .55 * 100)));
+    ctx.font = `600 ${13 * u}px Figtree, sans-serif`; ctx.fillStyle = "#fff";
+    ctx.fillText((conf >= 60 ? "Fogo " : "Calor ") + conf + "%", px + R * .9, py - R * .9);
+    if (this.hot) this.hot.textContent = conf >= 60 ? "Foco detectado · " + conf + "%" : "Sem foco";
+    Thermal.ultimaConf = conf;
+  }
+}
+const thermals = new WeakSet();
+function initThermals(root = document) {
+  $$("canvas[data-thermal]", root).forEach(c => { if (!thermals.has(c)) { thermals.add(c); new Thermal(c); } });
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) $$("canvas[data-thermal]").forEach(c => c.dispatchEvent(new Event("wake"))); });
+
+/* =====================================================================
+   TELEMETRIA SIMULADA
+   ===================================================================== */
+const tel = { bat: 87, alt: 60, vel: 8, lat: CONFIG.mapa.lat, lon: CONFIG.mapa.lon };
+function atualizaTelemetria() {
+  if (CONFIG.telemetriaSimulada) {
+    tel.bat = Math.max(15, tel.bat - .05);
+    tel.alt = 58 + Math.round(Math.random() * 5);
+    tel.vel = 7 + Math.round(Math.random() * 3);
+    tel.lat += (Math.random() - .5) * .0002; tel.lon += (Math.random() - .5) * .0002;
+  }
+  const vals = {
+    status: "Em voo", bat: Math.round(tel.bat) + "%", alt: tel.alt + " m", vel: tel.vel + " km/h",
+    tmax: Thermal.ultimaConf != null ? (Thermal.ultimaConf >= 60 ? "Fogo " + Thermal.ultimaConf + "%" : "Nenhum") : "--",
+    sinal: "4G", gps: tel.lat.toFixed(4) + ", " + tel.lon.toFixed(4)
+  };
+  $$("[data-tel]").forEach(el => { const k = el.dataset.tel; if (k in vals) el.textContent = vals[k]; });
+}
+
+/* =====================================================================
+   MONTA AS PÁGINAS A PARTIR DOS DADOS
+   ===================================================================== */
+function montar() {
+  $("#stepsList").innerHTML = PASSOS.map(([t, d, tag]) => `<div class="step"><div><h3>${t}</h3><p>${d}</p><span class="tag leaf">${tag}</span></div></div>`).join("");
+
+  $("#prodList").innerHTML = PRODUTOS.map(p => `
+    <article class="card prod"><div class="top" style="background:${p.c}">${icon(p.i)}</div>
+      <div class="body"><h3>${p.n}</h3><p class="muted" style="font-size:.9rem">${p.d}</p>
+      <ul>${p.s.map(x => `<li>${x}</li>`).join("")}</ul><div class="price num">${brl(p.p)}</div></div></article>`).join("");
+  $("#kitPrice").textContent = CONFIG.precoKit || brl(PRODUTOS.reduce((t, p) => t + p.p, 0));
+
+  $("#teamList").innerHTML = CONFIG.equipe.map(m => {
+    const ini = m.nome.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+    return `<div class="card member"><div class="avatar">${m.foto ? `<img src="${esc(m.foto)}" alt="Foto de ${esc(m.nome)}" onerror="this.replaceWith(document.createTextNode('${ini}'))">` : ini}</div>
+      <h3 style="margin:0">${esc(m.nome)}</h3><p class="muted" style="font-size:.9rem">${esc(m.funcao)}</p></div>`;
+  }).join("");
+  $("#aboutText").textContent = CONFIG.sobre;
+  $("#footAbout").textContent = "Sistema de monitoramento de incêndios florestais com drone, inteligência artificial, GPS e transmissão 4G.";
+  $("#copyLine").textContent = `© ${CONFIG.ano} TechFire · Trabalho de Conclusão de Curso · ${CONFIG.escola}`;
+
+  $("#refList").innerHTML = REFS.map(g => `
+    <div class="ref-group"><h3><span class="ic" style="margin:0;width:36px;height:36px">${icon(g.icon)}</span>${g.cat}<span class="tag" style="margin-left:4px">${g.itens.length}</span></h3>
+      <div class="grid g2">${g.itens.map(([a, t, url]) => `<div class="card ref"><span class="who">${a}</span> ${t}${url ? `<br><a href="${url}" target="_blank" rel="noopener">Acessar fonte</a>` : ""}</div>`).join("")}</div></div>`).join("") +
+    `<p class="muted" style="font-size:.88rem">Referências organizadas conforme a ABNT NBR 6023.</p>`;
+
+  $("#journeyList").innerHTML = JORNADA.map(([t, d]) => `<div><b>${t}</b><span class="muted">${d}</span></div>`).join("");
+  $("#histBody").innerHTML = HISTORICO.map(([d, l, t, s, c]) => `<tr><td class="num">${d}</td><td class="num">${l}</td><td class="num"><b>${t}</b></td><td><span class="tag ${c}">${s}</span></td></tr>`).join("");
+
+  const temps = Array.from({ length: 24 }, (_, h) => Math.round(24 + 10 * Math.sin((h - 9) / 24 * Math.PI * 2) + (h === 14 ? 34 : h === 15 ? 20 : 0) + Math.random() * 4));
+  $("#bars").innerHTML = temps.map((v, h) => `<i class="${v > 45 ? "hot" : v > 33 ? "warm" : ""}" style="height:${Math.min(100, v / 70 * 100)}%" title="${h}h: risco ${Math.min(100, Math.round(v / 70 * 100))}%"></i>`).join("");
+  $("#alertTime").textContent = new Date().toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+
+  const { lat, lon } = CONFIG.mapa, dlt = .01;
+  $("#mapBox").innerHTML = `<iframe title="Mapa com a posição do drone" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${lon - dlt}%2C${lat - dlt}%2C${lon + dlt}%2C${lat + dlt}&layer=mapnik&marker=${lat}%2C${lon}"></iframe>`;
+
+  const play = $("#playBtn"); play.href = CONFIG.linkJogo;
+  if (CONFIG.linkJogo === "#") play.addEventListener("click", e => { e.preventDefault(); toast("Adicione o link do jogo em CONFIG.linkJogo"); });
+
+  $$("[data-toast]").forEach(b => b.addEventListener("click", () => toast(b.dataset.toast)));
+
+  $("#contactForm").addEventListener("submit", e => {
+    e.preventDefault(); const f = e.target;
+    const corpo = encodeURIComponent(`Nome: ${f.nome.value}\nE-mail: ${f.email.value}\n\n${f.msg.value}`);
+    location.href = `mailto:${CONFIG.emailContato}?subject=${encodeURIComponent("Contato pelo site GuardFlame")}&body=${corpo}`;
+    toast("Abrindo seu aplicativo de e-mail…");
+  });
+}
+
+/* ---------- INICIALIZAÇÃO ---------- */
+montar();
+fillIcons();
+renderRecorded();
+initThermals();
+atualizaTelemetria(); setInterval(atualizaTelemetria, 1000);
+route();
+</script>
+</body>
+</html>

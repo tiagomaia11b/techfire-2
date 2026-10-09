@@ -1,0 +1,10 @@
+/* =====================================================================
+   PÁGINA REFERÊNCIAS (referencias.html)
+   ===================================================================== */
+.ref-group{margin-bottom:34px}
+.ref-group h3{display:flex;align-items:center;gap:10px;font-size:1.3rem}
+.ref-group h3 .ic{margin:0;width:36px;height:36px}
+.ref-group h3 .tag{margin-left:4px}
+.ref{font-size:.93rem;padding:16px 18px}
+.ref .who{font-weight:700}
+.ref a{color:var(--fire);font-weight:600;font-size:.85rem}

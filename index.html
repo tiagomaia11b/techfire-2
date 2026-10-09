@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TechFire · GuardFlame 1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="css/estilo.css">
+<link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <h1><span class="sub">TechFire apresenta</span>GuardFlame 1.0</h1>
+      <p class="lead">Um drone com câmera de 12 MP, inteligência artificial e GPS que encontra focos de incêndio florestal no começo, quando ainda dá para apagar, e transmite tudo ao vivo pela rede 4G.</p>
+      <div class="ctas">
+        <a class="btn btn-fire" href="aovivo/aovivo.html"><span data-icon="radio"></span>Assistir ao vivo</a>
+        <a class="btn btn-line" href="manual/manual.html">Como funciona</a>
+      </div>
+      <div class="readout">
+        <div><b class="num">95%</b><span>precisão</span></div>
+        <div><b class="num">10x</b><span>mais rápido</span></div>
+        <div><b class="num">24/7</b><span>em operação</span></div>
+      </div>
+    </div>
+    <div class="scope"><canvas data-thermal data-main></canvas>
+      <div class="hud">
+        <div class="tl"><span class="rec">Mapa de detecção · simulação</span></div>
+        <div class="tr" data-hot>--</div>
+        <div class="bl"><span class="scale"></span><span>Risco baixo</span><span>alto</span></div>
+        <div class="br num" data-tel="gps">-23.5505, -46.6333</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Monitoramento em tempo real</h2><p class="muted">Tudo o que o drone capta chega ao painel em segundos.</p></div>
+    <div class="grid g4">
+      <div class="card"><div class="ic" data-icon="eye"></div><h3>Detecção por imagem</h3><p class="muted">A câmera Arducam de 12 MP e a IA no Raspberry Pi reconhecem fogo e fumaça na imagem.</p></div>
+      <div class="card"><div class="ic" data-icon="pin"></div><h3>GPS preciso</h3><p class="muted">Cada foco vem com latitude e longitude para a equipe ir direto ao ponto.</p></div>
+      <div class="card"><div class="ic" data-icon="wifi"></div><h3>Transmissão 4G</h3><p class="muted">O modem 4G envia o vídeo para a Twitch e os alertas para o site, mesmo longe de qualquer Wi-Fi.</p></div>
+      <div class="card"><div class="ic" data-icon="mic"></div><h3>Comunicação por voz</h3><p class="muted">Alto-falantes avisam quem está na área, e o drone entende comandos de voz.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="section-head"><h2>Diferenciais</h2><p class="muted">Por que o GuardFlame é diferente de uma torre de vigilância.</p></div>
+    <div class="grid g3">
+      <div class="card"><div class="ic leaf" data-icon="coins"></div><h3>Baixo custo</h3><p class="muted">Feito com Raspberry Pi, Pixhawk e peças acessíveis, custa uma fração dos sistemas comerciais.</p></div>
+      <div class="card"><div class="ic leaf" data-icon="drone"></div><h3>Vai até o fogo</h3><p class="muted">Sobrevoa áreas de difícil acesso que câmeras fixas não alcançam.</p></div>
+      <div class="card"><div class="ic leaf" data-icon="zap"></div><h3>Fácil de operar</h3><p class="muted">Um painel simples, pensado para quem está em campo, não para técnicos.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section tight">
+  <div class="wrap">
+    <div class="section-head"><h2>Para quem é</h2></div>
+    <div class="audience">
+      <div><div class="ic" data-icon="building"></div><h3>Órgãos ambientais</h3><p class="muted">Fiscalização de reservas e parques.</p></div>
+      <div><div class="ic" data-icon="shield"></div><h3>Brigadas de incêndio</h3><p class="muted">Resposta mais rápida e segura.</p></div>
+      <div><div class="ic" data-icon="tree"></div><h3>Produtores rurais</h3><p class="muted">Proteção de lavouras e pastagens.</p></div>
+      <div><div class="ic" data-icon="users"></div><h3>Defesa Civil</h3><p class="muted">Informação confiável para decidir.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="wrap">
+    <div class="goal">
+      <div><h2>Objetivo</h2><p>Reduzir o tempo entre o início de um foco e a chegada da brigada, diminuindo a área queimada e os danos à fauna, à flora e às pessoas.</p></div>
+      <div class="stats"><div><b>10x</b><span>mais rápido</span></div><div><b>95%</b><span>precisão</span></div><div><b>24/7</b><span>operação</span></div></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/layout.js"></script>
+<script src="js/termico.js"></script>
+<script src="js/telemetria.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

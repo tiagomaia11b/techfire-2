@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Produto · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="produto.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title"><h1>Componentes do sistema</h1><p>As peças que formam o GuardFlame 1.0 e o valor aproximado de cada uma no mercado brasileiro.</p></div>
+<div class="section tight"><div class="wrap"><div class="grid g4" id="prodList"></div></div></div>
+<div class="section tight">
+  <div class="wrap">
+    <div class="kit">
+      <div class="info">
+        <span class="tag">Kit completo</span>
+        <h2 style="margin-top:12px">GuardFlame 1.0</h2>
+        <ul><li>Drone F450 montado e calibrado com Pixhawk 2.4.8</li><li>Câmera Arducam IMX708 de 12 MP com foco automático</li><li>Raspberry Pi 4 com modem 4G para transmissão ao vivo</li><li>Sistema de áudio com reconhecimento de voz</li><li>Acesso ao painel de monitoramento</li></ul>
+        <p class="muted" style="margin:0">soma estimada dos componentes</p>
+        <div class="big num" id="kitPrice">R$ 2.800,00</div>
+        <div class="ctas">
+          <a class="btn btn-fire" href="../equipe/equipe.html#contato">Solicitar orçamento</a>
+          <a class="btn btn-line" href="../manual/manual.html">Ver manual</a>
+        </div>
+      </div>
+      <div class="art"><span data-icon="drone"></span></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="produto.js"></script>
+</body>
+</html>

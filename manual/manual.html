@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Manual · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="manual.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title"><h1>Manual de operação</h1><p>Do drone desligado ao relatório final, em oito passos.</p></div>
+<div class="section tight"><div class="wrap"><div class="steps" id="stepsList"></div></div></div>
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Vídeo demonstrativo</h2><p class="muted">Assista ao passo a passo completo.</p></div>
+    <div class="manual-video"><div class="player" data-video="manual"></div></div>
+  </div>
+</div>
+<div class="section tight">
+  <div class="wrap grid g3">
+    <div class="card"><div class="ic" data-icon="mail"></div><h3>Suporte técnico</h3><p class="muted">Dúvidas na operação? Fale com a equipe pela página <a href="../equipe/equipe.html#contato">Quem somos</a>.</p></div>
+    <div class="card"><div class="ic" data-icon="clock"></div><h3>Tempo de resposta</h3><p class="muted">Respondemos em até 24 horas úteis.</p></div>
+    <div class="card"><div class="ic" data-icon="file"></div><h3>Atualizações</h3><p class="muted">Este manual acompanha a versão 1.0 do sistema.</p></div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/videos.js"></script>
+<script src="manual.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jogo · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="jogo.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+  <div class="wrap page-title"><span class="tag amber"><span data-icon="gamepad"></span>Jogo educativo</span><h1 style="margin-top:14px">Firetech: Wildfire Protocol</h1><p>Aprenda a combater incêndios florestais no comando do robô A.R.B.O.R.</p></div>
+  <div class="section tight">
+    <div class="wrap game-hero">
+      <div class="card">
+        <h2 style="font-size:1.6rem">A história</h2>
+        <p>Em 2035, as florestas brasileiras enfrentam a pior temporada de queimadas da história. A.R.B.O.R. é um robô criado para proteger a mata: ele detecta o calor, rastreia os focos e protege os animais antes que as chamas avancem.</p>
+        <p class="muted">Cada fase é baseada em situações reais de combate a incêndio e ensina como a tecnologia ajuda a prevenir desastres.</p>
+        <h3 style="margin-top:24px">Habilidades do A.R.B.O.R.</h3>
+        <div class="abil"><div class="ic" data-icon="thermo"></div><div><b>Visão térmica</b><p class="muted" style="margin:0">Enxerga focos escondidos pela fumaça.</p></div></div>
+        <div class="abil"><div class="ic leaf" data-icon="pin"></div><div><b>Rastreamento GPS</b><p class="muted" style="margin:0">Marca no mapa cada foco encontrado.</p></div></div>
+        <div class="abil"><div class="ic" data-icon="zap"></div><div><b>Pulso de contenção</b><p class="muted" style="margin:0">Cria barreiras para o fogo não se espalhar.</p></div></div>
+      </div>
+      <div>
+        <div class="player" data-video="jogo"></div>
+        <p class="muted" style="font-size:.88rem;margin-top:10px">Prévia do gameplay</p>
+      </div>
+    </div>
+  </div>
+  <div class="section tight">
+    <div class="wrap">
+      <div class="goal">
+        <div><h2>Pronto para a missão?</h2><p>Ajude o A.R.B.O.R. a salvar a floresta.</p></div>
+        <div><a class="btn" style="background:#fff;color:var(--fire)" id="playBtn" target="_blank" rel="noopener"><span data-icon="play"></span>Jogar agora</a></div>
+      </div>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="card"><span class="muted">Plataforma</span><h3 style="margin:4px 0 0">Navegador (PC)</h3></div>
+        <div class="card"><span class="muted">Gênero</span><h3 style="margin:4px 0 0">Ação educativa</h3></div>
+        <div class="card"><span class="muted">Classificação</span><h3 style="margin:4px 0 0">Livre</h3></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/videos.js"></script>
+<script src="jogo.js"></script>
+</body>
+</html>

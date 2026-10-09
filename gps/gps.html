@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GPS · Conexão · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="gps.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title">
+  <h1>Conectar o GPS</h1>
+  <p>O GPS NEO-6M fica ligado na Pixhawk. O Raspberry Pi lê a posição pela MAVLink e grava no banco de dados pela internet 4G — e esta página mostra o drone no mapa.</p>
+  <div class="fluxo"><span>GPS NEO-6M</span><i>→</i><span>Pixhawk</span><i>→</i><span>Raspberry Pi</span><i>→</i><span>Modem 4G</span><i>→</i><span>Banco de dados</span><i>→</i><span>Site · Mapa</span></div>
+</div>
+<div id="subnav"></div>
+
+<div class="section tight">
+  <div class="wrap gps-grid">
+    <div id="mapa" role="region" aria-label="Mapa com a posição do drone"></div>
+    <div class="card gps-card">
+      <div class="topo"><h3>Posição do drone</h3><span class="pill" data-tel-pill>--</span></div>
+      <div class="tel">
+        <div><span>Status</span><b data-tel="status">--</b></div>
+        <div><span>Bateria</span><b data-tel="bat">--</b></div>
+        <div><span>Altitude</span><b data-tel="alt">--</b></div>
+        <div><span>Velocidade</span><b data-tel="vel">--</b></div>
+        <div><span>Satélites</span><b data-tel="sat">--</b></div>
+        <div><span>Atualizado</span><b data-tel="hora">--</b></div>
+      </div>
+      <p class="coords">Lat, Lon: <b class="num" data-tel="gps">--</b></p>
+      <p class="muted" style="font-size:.85rem;margin:0" data-tel="fonte"></p>
+      <p class="erro-api" id="apiErro"></p>
+      <label class="seguir"><input type="checkbox" id="seguir" checked> Seguir o drone no mapa</label>
+      <div class="botoes">
+        <button class="btn btn-line btn-sm" type="button" id="centralizar"><span data-icon="pin"></span>Centralizar</button>
+        <a class="btn btn-line btn-sm" id="linkMaps" href="#" target="_blank" rel="noopener">Abrir no Google Maps</a>
+        <a class="btn btn-line btn-sm" href="../aovivo/aovivo.html"><span data-icon="radio"></span>Câmera ao vivo</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Passo a passo</h2><p class="muted">Antes, deixe o <a href="../banco/banco.html" style="color:var(--fire);font-weight:600">banco de dados</a> pronto — é nele que o GPS é gravado.</p></div>
+    <div class="steps">
+      <div class="step"><div>
+        <h3>Ligue a Pixhawk no Raspberry Pi</h3>
+        <p>O jeito mais fácil é um <b>cabo USB</b> da Pixhawk numa porta USB do Pi (aparece como <code class="inline">/dev/ttyACM0</code>). Também dá para usar a porta <b>TELEM2</b> nos pinos do Pi:</p>
+        <div class="fiacao">
+          <div class="table-wrap"><table>
+            <thead><tr><th>Pixhawk TELEM2</th><th>Raspberry Pi</th></tr></thead>
+            <tbody><tr><td>TX</td><td>GPIO15 · RX (pino 10)</td></tr><tr><td>RX</td><td>GPIO14 · TX (pino 8)</td></tr><tr><td>GND</td><td>GND (pino 6)</td></tr><tr><td>5V</td><td><b>não ligar</b></td></tr></tbody>
+          </table></div>
+          <div><p class="muted" style="font-size:.9rem">Pela TELEM2: no Mission Planner ajuste <code class="inline">SERIAL2_PROTOCOL = 2</code> e <code class="inline">SERIAL2_BAUD = 57</code>. No Pi, rode <code class="inline">sudo raspi-config</code> › Interface Options › Serial Port: shell <b>Não</b>, hardware <b>Sim</b>. A porta será <code class="inline">/dev/serial0</code>.</p></div>
+        </div>
+      </div></div>
+      <div class="step"><div>
+        <h3>Instale as bibliotecas no Pi</h3>
+<pre class="code"><code>python3 -m venv ~/gf
+~/gf/bin/pip install pymavlink requests</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Configure o script</h3>
+        <p>Copie <a href="../raspberry/enviar_gps.py" download>raspberry/enviar_gps.py</a> para o Pi e edite as linhas do topo: o endereço da pasta <code class="inline">api/</code> do site, a mesma <code class="inline">CHAVE_API</code> do <code class="inline">api/conexao.php</code> e a porta da Pixhawk.</p>
+<pre class="code"><code>SITE_API = "https://SEU-SITE.com/api/"
+CHAVE    = "a-mesma-chave-do-conexao.php"
+PORTA    = "/dev/ttyACM0"     # USB  ·  TELEM2: "/dev/serial0"
+BAUD     = 115200             # USB  ·  TELEM2: 57600</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Teste sem o drone</h3>
+        <p>O modo simulado envia posições falsas. Se elas aparecerem no mapa acima, o caminho Pi → banco → site está funcionando.</p>
+<pre class="code"><code>~/gf/bin/python ~/enviar_gps.py --simular</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Rode com o drone</h3>
+        <p>Com a bateria ligada e o GPS a céu aberto (espere 1–2 minutos para pegar os satélites):</p>
+<pre class="code"><code>~/gf/bin/python ~/enviar_gps.py</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Faça começar sozinho</h3>
+        <p>Em <code class="inline">crontab -e</code>, adicione (troque <b>pi</b> pelo seu usuário):</p>
+<pre class="code"><code>@reboot sleep 30 &amp;&amp; /home/pi/gf/bin/python /home/pi/enviar_gps.py &gt;&gt; /home/pi/gps.log 2&gt;&amp;1</code></pre>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section tight">
+  <div class="wrap">
+    <div class="section-head"><h2>Testar a gravação pelo site</h2><p class="muted">Envia um ponto de teste para o banco, sem precisar do Raspberry Pi. Use a <code class="inline">CHAVE_API</code> do <code class="inline">api/conexao.php</code>.</p></div>
+    <form class="teste card" id="formTeste">
+      <div class="msg" id="testeMsg" role="status"></div>
+      <div class="linha">
+        <div class="input"><span data-icon="lock"></span><input type="password" id="chaveTeste" placeholder="Chave da API" autocomplete="off"></div>
+        <button class="btn btn-fire" type="submit">Enviar ponto de teste</button>
+      </div>
+    </form>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/telemetria.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="gps.js"></script>
+</body>
+</html>

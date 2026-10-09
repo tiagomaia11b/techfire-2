@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Câmera · Conexão · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="camera.css">
+</head>
+<body data-raiz="../">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title">
+  <h1>Conectar a câmera</h1>
+  <p>A câmera Arducam do drone transmite pelo Raspberry Pi direto para a Twitch. O site mostra esse canal na página <a href="../aovivo/aovivo.html" style="color:var(--fire)">Ao vivo</a>.</p>
+  <div class="fluxo"><span>Arducam 12 MP</span><i>→</i><span>Raspberry Pi 4</span><i>→</i><span>Modem 4G</span><i>→</i><span>Twitch</span><i>→</i><span>Site · Ao vivo</span></div>
+</div>
+<div id="subnav"></div>
+
+<div class="section tight">
+  <div class="wrap live-grid">
+    <div>
+      <div class="player" id="livePlayer"><span class="live-badge">AO VIVO</span></div>
+      <div class="live-actions" id="liveActions"></div>
+    </div>
+    <div class="card config-card">
+      <h3>Canal da Twitch</h3>
+      <form id="formCanal">
+        <label class="field" style="margin:0"><span>Nome do canal (o que vem depois de twitch.tv/)</span>
+          <div class="input"><span data-icon="radio"></span><input id="canal" placeholder="ex.: techfire_guardflame" autocomplete="off" spellcheck="false"></div></label>
+        <div class="botoes">
+          <button class="btn btn-fire btn-sm" type="submit">Testar aqui</button>
+          <button class="btn btn-line btn-sm" type="button" id="salvarCanal">Salvar neste navegador</button>
+          <button class="btn btn-line btn-sm" type="button" id="limparCanal">Limpar</button>
+        </div>
+      </form>
+      <ul class="checklist" id="checks"></ul>
+      <h4>Linha para o js/config.js (dentro de aoVivo)</h4>
+      <pre class="code"><code id="linhaConfig">twitchCanal: "",</code></pre>
+    </div>
+  </div>
+</div>
+
+<div class="section alt">
+  <div class="wrap">
+    <div class="section-head"><h2>Passo a passo no Raspberry Pi</h2><p class="muted">Faça uma vez. Depois a transmissão começa sozinha sempre que o drone ligar.</p></div>
+    <div class="steps">
+      <div class="step"><div>
+        <h3>Pegue a chave de transmissão da Twitch</h3>
+        <p>Na Twitch, entre em <b>Painel do criador › Configurações › Transmissão</b> e copie a <b>Chave de transmissão principal</b>.</p>
+        <div class="aviso">A chave funciona como uma senha: quem tiver ela transmite no seu canal. Coloque só no Raspberry Pi — nunca no site, no GitHub ou em prints do TCC.</div>
+      </div></div>
+      <div class="step"><div>
+        <h3>Instale os programas</h3>
+        <p>No terminal do Raspberry Pi (Raspberry Pi OS Bookworm):</p>
+<pre class="code"><code>sudo apt update
+sudo apt install -y ffmpeg rpicam-apps</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Teste a câmera</h3>
+        <p>Deve abrir a imagem por 5 segundos. Se aparecer <i>no cameras available</i>, confira o cabo flat (lado azul para o lado certo) e reinicie.</p>
+<pre class="code"><code>rpicam-hello -t 5000</code></pre>
+        <p class="muted" style="font-size:.88rem">Em versões antigas do sistema o comando se chama <code class="inline">libcamera-hello</code> — o script já reconhece os dois.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Copie o script e coloque sua chave</h3>
+        <p>Copie o arquivo <a href="../raspberry/transmitir_twitch.sh" download>raspberry/transmitir_twitch.sh</a> para a pasta do usuário no Pi (pendrive ou <code class="inline">scp</code>). Abra e troque a linha <code class="inline">CHAVE_TWITCH=</code> pela sua chave:</p>
+<pre class="code"><code>nano ~/transmitir_twitch.sh
+chmod +x ~/transmitir_twitch.sh
+~/transmitir_twitch.sh</code></pre>
+        <p>Em uns 10 segundos o canal entra ao vivo. Clique em <b>Testar aqui</b> lá em cima para ver.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Faça começar sozinho quando o drone ligar</h3>
+        <p>Rode <code class="inline">crontab -e</code> e adicione a linha abaixo no final (troque <b>pi</b> pelo seu usuário):</p>
+<pre class="code"><code>@reboot sleep 30 &amp;&amp; /home/pi/transmitir_twitch.sh &gt;&gt; /home/pi/twitch.log 2&gt;&amp;1</code></pre>
+      </div></div>
+      <div class="step"><div>
+        <h3>Coloque o canal no site</h3>
+        <p>Em <code class="inline">js/config.js</code>, dentro de <code class="inline">aoVivo</code>, preencha <code class="inline">twitchCanal</code> com o nome do canal (use a linha pronta do quadro acima). Pronto: a página Ao vivo mostra a transmissão para todo mundo.</p>
+        <p class="muted" style="font-size:.88rem">O player da Twitch só aparece com o site publicado em <b>https</b> ou aberto em <b>localhost</b> (XAMPP). Aberto direto do arquivo, aparece o botão “Abrir na Twitch”.</p>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section tight">
+  <div class="wrap grid g3">
+    <div class="card"><div class="ic" data-icon="wifi"></div><h3>Qualidade no 4G</h3><p class="muted">O script envia 720p a 2,5 Mbps. Se travar, diminua <code class="inline">BITRATE</code> para 1500000 no script.</p></div>
+    <div class="card"><div class="ic" data-icon="clock"></div><h3>Atraso</h3><p class="muted">A Twitch tem de 3 a 8 segundos de atraso. Ative “Baixa latência” nas configurações de transmissão do canal.</p></div>
+    <div class="card"><div class="ic" data-icon="mic"></div><h3>Áudio</h3><p class="muted">Por padrão vai sem som. Para usar o microfone USB do drone, mude <code class="inline">AUDIO="microfone"</code> no script.</p></div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/termico.js"></script>
+<script src="../js/transmissao.js"></script>
+<script src="camera.js"></script>
+</body>
+</html>
