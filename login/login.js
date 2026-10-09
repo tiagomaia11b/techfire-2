@@ -78,5 +78,4 @@ $$(".peek").forEach(b => b.addEventListener("click", () => {
 /* ---------- INICIALIZAÇÃO ---------- */
 fillIcons();
 ativarTema();
-initThermals();
 mostrarAvisoPendente();

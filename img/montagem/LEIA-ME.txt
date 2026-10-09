@@ -1,0 +1,3 @@
+Coloque aqui as fotos da montagem do drone (JPG ou PNG):
+foto-01.jpg, foto-02.jpg, foto-03.jpg ...
+(os nomes precisam ser iguais aos do CONFIG.montagem no arquivo js/config.js)

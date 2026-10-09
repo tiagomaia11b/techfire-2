@@ -14,6 +14,9 @@ const MENU = [
   ["ux",          "Experiência", "experiencia/experiencia.html"],
   ["conexao",     "Conexão",     "camera/camera.html"]
 ];
+/* Página só do dono do site (CONFIG.dono): aparece no menu apenas para ele */
+const GUIA = ["guia", "Meu guia", "guia/guia.html"];
+
 /* Páginas de conexão do drone: ficam juntas no item "Conexão" do menu, com abas */
 const CONEXAO = [
   ["camera", "Câmera",          "camera/camera.html", "eye"],
@@ -25,14 +28,14 @@ function linkPara(pg) {
   const item = MENU.find(m => m[0] === pg);
   return RAIZ + (item ? item[2] : "index.html");
 }
-const linkMenu = ([pg, nome, arq]) => `<a href="${RAIZ + arq}" data-pg="${pg}"${pg === "aovivo" ? ' class="live"' : ""}>${nome}</a>`;
+const linkMenu = ([pg, nome, arq]) => `<a href="${RAIZ + arq}" data-pg="${pg}"${pg === "aovivo" ? ' class="live"' : pg === "guia" ? ' class="dono"' : ""}>${nome}</a>`;
 
 function montarLayout(ativo) {
   $("#topo").outerHTML = `
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="${linkPara("home")}"><span class="mark" data-icon="flame"></span>TechFire</a>
-    <nav class="nav" id="nav" aria-label="Principal">${MENU.map(linkMenu).join("")}</nav>
+    <nav class="nav" id="nav" aria-label="Principal">${(ehDono() ? MENU.concat([GUIA]) : MENU).map(linkMenu).join("")}</nav>
     <div class="tools">
       <span class="user-chip" id="userChip"></span>
       <button class="icon-btn theme-btn" data-theme-toggle aria-label="Alternar modo claro/escuro">

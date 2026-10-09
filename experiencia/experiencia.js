@@ -5,16 +5,16 @@
    ===================================================================== */
 const JORNADA = [
   ["Cadastro", "Cria a conta no site"], ["Login", "Entra no painel"], ["Conexão", "Liga e conecta o drone"], ["Voo", "Define a área e decola"],
-  ["Monitoramento", "Acompanha vídeo e calor"], ["Alerta", "Recebe aviso de foco"], ["Registro", "Confirma a ocorrência"], ["Relatório", "Consulta o histórico"]
+  ["Monitoramento", "Acompanha vídeo e GPS"], ["Alerta", "Recebe aviso de foco"], ["Registro", "Confirma a ocorrência"], ["Relatório", "Consulta o histórico"]
 ];
 
 /* Exemplos usados quando o banco de dados ainda não está ligado */
 const HISTORICO = [
-  ["04/10/2026 14:32", "-23.5612, -46.6401", "94%", "Em atendimento"],
-  ["02/10/2026 11:05", "-23.5487, -46.6218", "88%", "Controlado"],
-  ["28/09/2026 16:47", "-23.5701, -46.6550", "61%", "Falso alarme"],
-  ["25/09/2026 09:18", "-23.5399, -46.6102", "97%", "Controlado"],
-  ["21/09/2026 15:56", "-23.5823, -46.6489", "90%", "Controlado"]
+  ["04/10/2026 14:32", "-23.6651, -46.7809", "94%", "Em atendimento"],
+  ["02/10/2026 11:05", "-23.6689, -46.7852", "88%", "Controlado"],
+  ["28/09/2026 16:47", "-23.6630, -46.7867", "61%", "Falso alarme"],
+  ["25/09/2026 09:18", "-23.6702, -46.7795", "97%", "Controlado"],
+  ["21/09/2026 15:56", "-23.6618, -46.7824", "90%", "Controlado"]
 ];
 const COR_SITUACAO = { "Em atendimento": "", "Controlado": "leaf", "Falso alarme": "amber" };
 

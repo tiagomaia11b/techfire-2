@@ -6,6 +6,7 @@ const CONFIG = {
   ano: 2026,
   emailContato: "contato@techfire.com",   // para onde o formulário de contato envia
   exigirLogin: true,                       // false = o site abre sem precisar entrar
+  dono: "tiago@techfire.com",             // só esta conta vê a página "Meu guia" (guia/guia.html)
 
   /* ---------- CONTAS DA EQUIPE ----------
      Funcionam em qualquer computador e navegador, sem precisar criar conta.
@@ -44,12 +45,16 @@ const CONFIG = {
   telemetria: "auto",       // "auto" = dados do drone quando ele estiver enviando, senão simulação
                             // "drone" = só dados reais · "simulada" = sempre simulação
 
-  /* ---------- VÍDEOS GRAVADOS ----------
-     Use "arquivo" (MP4 na pasta videos/) OU "youtube" (ID do vídeo).          */
-  videos: [
-    { titulo: "Primeiro voo de teste",   descricao: "Calibração e decolagem.",           arquivo: "videos/voo-01.mp4", capa: "", youtube: "" },
-    { titulo: "Detecção de foco",        descricao: "A IA marca o fogo e a fumaça na imagem.", arquivo: "videos/voo-02.mp4", capa: "", youtube: "" },
-    { titulo: "Voo de patrulha",         descricao: "Rota completa sobre a área de teste.", arquivo: "videos/voo-03.mp4", capa: "", youtube: "" }
+  /* ---------- VÍDEOS E FOTOS DA MONTAGEM (página Ao vivo) ----------
+     tipo "foto":  arquivo na pasta img/montagem/ (JPG ou PNG)
+     tipo "video": arquivo MP4 na pasta videos/ OU "youtube" (ID do vídeo)
+     Adicione quantos quiser, um por linha.                                     */
+  montagem: [
+    { tipo: "foto",  titulo: "Peças do drone",          descricao: "Todos os componentes antes da montagem.",      arquivo: "img/montagem/foto-01.jpg" },
+    { tipo: "foto",  titulo: "Frame e motores",         descricao: "Montagem do frame F450 e fixação dos motores.", arquivo: "img/montagem/foto-02.jpg" },
+    { tipo: "foto",  titulo: "Pixhawk e Raspberry Pi",  descricao: "Ligação da controladora, do Pi e do GPS.",       arquivo: "img/montagem/foto-03.jpg" },
+    { tipo: "video", titulo: "Montagem completa",       descricao: "O passo a passo da montagem do GuardFlame.",    arquivo: "videos/montagem-01.mp4", capa: "", youtube: "" },
+    { tipo: "video", titulo: "Ligando a câmera e o 4G", descricao: "Instalação da Arducam e do modem 4G.",          arquivo: "videos/montagem-02.mp4", capa: "", youtube: "" }
   ],
   videoManual: { arquivo: "videos/manual.mp4", youtube: "" },
   videoJogo:   { arquivo: "videos/jogo.mp4",   youtube: "" },
@@ -64,5 +69,5 @@ const CONFIG = {
   sobre: "O TechFire GuardFlame é um Trabalho de Conclusão de Curso: um drone F450 com controladora Pixhawk, Raspberry Pi 4, câmera Arducam de 12 MP, GPS e internet 4G que detecta focos de incêndio florestal, transmite o voo ao vivo e avisa as pessoas da área por voz.",
 
   precoKit: "",   // vazio = soma automática dos componentes
-  mapa: { lat: -23.5505, lon: -46.6333 }   // posição inicial do drone no mapa
+  mapa: { lat: -23.6664, lon: -46.7831, local: "UNASP SP" }   // onde o drone está (UNASP – Campus São Paulo)
 };

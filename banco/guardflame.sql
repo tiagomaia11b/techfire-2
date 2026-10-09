@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS ocorrencias (
 
 -- Exemplos (apague quando tiver dados reais)
 INSERT IGNORE INTO ocorrencias (id, lat, lon, confianca, descricao, situacao, criado_em) VALUES
-  (1, -23.5823000, -46.6489000, 90, 'Chamas e fumaça na imagem', 'Controlado',     '2026-09-21 15:56:00'),
-  (2, -23.5399000, -46.6102000, 97, 'Chamas e fumaça na imagem', 'Controlado',     '2026-09-25 09:18:00'),
-  (3, -23.5701000, -46.6550000, 61, 'Reflexo do sol no telhado', 'Falso alarme',   '2026-09-28 16:47:00'),
-  (4, -23.5487000, -46.6218000, 88, 'Fumaça na imagem',          'Controlado',     '2026-10-02 11:05:00'),
-  (5, -23.5612000, -46.6401000, 94, 'Chamas e fumaça na imagem', 'Em atendimento', '2026-10-04 14:32:00');
+  (1, -23.6618000, -46.7824000, 90, 'Chamas e fumaça na imagem', 'Controlado',     '2026-09-21 15:56:00'),
+  (2, -23.6702000, -46.7795000, 97, 'Chamas e fumaça na imagem', 'Controlado',     '2026-09-25 09:18:00'),
+  (3, -23.6630000, -46.7867000, 61, 'Reflexo do sol no telhado', 'Falso alarme',   '2026-09-28 16:47:00'),
+  (4, -23.6689000, -46.7852000, 88, 'Fumaça na imagem',          'Controlado',     '2026-10-02 11:05:00'),
+  (5, -23.6651000, -46.7809000, 94, 'Chamas e fumaça na imagem', 'Em atendimento', '2026-10-04 14:32:00');

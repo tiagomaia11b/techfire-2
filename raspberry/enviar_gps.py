@@ -44,9 +44,9 @@ def mostrar(d, ok):
 
 
 def simular():
-    """Voa em círculo perto de São Paulo, sem precisar do drone."""
+    """Voa em círculo sobre o UNASP SP, sem precisar do drone."""
     print("Modo simulado: enviando posições falsas para", SITE_API)
-    lat0, lon0, t, bat = -23.5505, -46.6333, 0, 100.0
+    lat0, lon0, t, bat = -23.6664, -46.7831, 0, 100.0
     while True:
         d = {"lat": round(lat0 + 0.002 * math.sin(t / 20), 7), "lon": round(lon0 + 0.002 * math.cos(t / 20), 7),
              "altitude": 60, "velocidade": 8, "bateria": int(bat), "satelites": 10, "status": "Simulação"}

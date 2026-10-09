@@ -22,7 +22,7 @@
 <main>
 <div class="wrap page-title">
   <h1>Voo ao vivo</h1>
-  <p>Imagem da câmera do drone em tempo real, transmitida pela Twitch, e a telemetria do GPS. Abaixo ficam os voos gravados.</p>
+  <p>Imagem da câmera do drone em tempo real, transmitida pela Twitch, e a telemetria do GPS. Abaixo ficam os vídeos e fotos da montagem.</p>
 </div>
 <div class="section tight">
   <div class="wrap live-grid">
@@ -38,7 +38,7 @@
         <div><span>Bateria</span><b data-tel="bat">--</b></div>
         <div><span>Altitude</span><b data-tel="alt">--</b></div>
         <div><span>Velocidade</span><b data-tel="vel">--</b></div>
-        <div><span>Detecção</span><b data-tel="tmax">--</b></div>
+        <div><span>Satélites</span><b data-tel="sat">--</b></div>
         <div><span>Rede</span><b data-tel="sinal">--</b></div>
       </div>
       <p style="margin:14px 0 0;font-size:.85rem" class="muted">Posição: <b class="num" data-tel="gps">--</b></p>
@@ -51,8 +51,8 @@
 </div>
 <div class="section alt">
   <div class="wrap">
-    <div class="section-head"><h2>Voos gravados</h2><p class="muted">Gravações dos testes de campo do GuardFlame.</p></div>
-    <div class="grid g3" id="recordedList"></div>
+    <div class="section-head"><h2>Montagem do drone</h2><p class="muted">Vídeos e fotos da montagem do GuardFlame.</p></div>
+    <div class="grid g3" id="montagemList"></div>
   </div>
 </div>
 </main>
@@ -63,7 +63,6 @@
 <script src="../js/config.js"></script>
 <script src="../js/utils.js"></script>
 <script src="../js/layout.js"></script>
-<script src="../js/termico.js"></script>
 <script src="../js/videos.js"></script>
 <script src="../js/transmissao.js"></script>
 <script src="../js/telemetria.js"></script>

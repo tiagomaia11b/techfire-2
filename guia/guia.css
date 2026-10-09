@@ -1,0 +1,56 @@
+/* =====================================================================
+   PÁGINA MEU GUIA (guia.html) — só para o dono do site
+   ===================================================================== */
+/* Esconde tudo até o guia.js confirmar que é o dono */
+body.restrito main{visibility:hidden}
+
+.guia{display:grid;grid-template-columns:240px minmax(0,1fr);gap:36px;align-items:start}
+@media (max-width:950px){.guia{grid-template-columns:1fr}}
+
+/* Índice lateral */
+.indice{position:sticky;top:calc(86px + env(safe-area-inset-top,0px));display:grid;gap:2px;font-size:.9rem}
+.indice b{font:700 .78rem var(--f-body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.indice b:first-child{margin-top:0}
+.indice a{text-decoration:none;color:var(--muted);padding:.35em .7em;border-radius:8px;border-left:2px solid transparent}
+.indice a:hover{color:var(--ink);background:var(--surface-2)}
+.indice a.on{color:var(--fire);border-left-color:var(--fire);background:var(--fire-soft)}
+@media (max-width:950px){.indice{position:static;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px}.indice b{grid-column:1/-1}}
+
+/* Progresso */
+.progresso{display:flex;align-items:center;gap:14px;margin-top:18px;max-width:620px}
+.progresso .barra{flex:1;height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.progresso .barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--fire),var(--fire-2));transition:width .4s}
+.progresso span{font-size:.88rem;font-weight:700;white-space:nowrap}
+
+/* Partes do guia */
+.parte{scroll-margin-top:90px;margin-bottom:56px}
+.parte>h2{display:flex;align-items:center;gap:12px}
+.parte>h2 .letra{flex:none;width:44px;height:44px;border-radius:12px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:1.2rem}
+.parte>p.intro{color:var(--muted);max-width:720px}
+.guia .steps{max-width:none}
+.step.feito{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf-soft) 55%,var(--surface))}
+.step.feito::before{background:var(--leaf);content:"✓"}
+.step ul,.step ol{color:var(--muted);padding-left:1.2em;margin:0 0 10px}
+.step li{margin:3px 0}
+.step li b,.step p b{color:var(--ink)}
+.feito-check{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-size:.85rem;font-weight:600;color:var(--muted);cursor:pointer;user-select:none}
+.feito-check input{accent-color:var(--leaf);width:16px;height:16px}
+
+/* Caixas de destaque */
+.caixa{border-radius:var(--r-sm);padding:12px 16px;font-size:.92rem;margin:10px 0}
+.caixa.aviso{border-left:4px solid var(--amber);background:var(--amber-soft)}
+.caixa.perigo{border-left:4px solid var(--fire);background:var(--fire-soft)}
+.caixa.dica{border-left:4px solid var(--leaf);background:var(--leaf-soft)}
+.caixa b{color:var(--ink)}
+
+/* Painel de status */
+.status-rapido{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:22px}
+.status-rapido .card{padding:16px 18px}
+.status-rapido .card span.muted{font-size:.8rem;display:block;margin-bottom:6px}
+
+/* Tabelas do guia */
+.guia table{min-width:0;font-size:.88rem}
+.guia td,.guia th{padding:10px 14px;vertical-align:top}
+.guia td code,.guia li code,.guia p code{background:var(--surface-2);padding:.1em .4em;border-radius:5px;font-size:.88em}
+.guia .table-wrap{margin:10px 0}
+.guia h3 small{font:500 .8rem var(--f-body);color:var(--muted)}

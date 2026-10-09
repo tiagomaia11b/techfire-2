@@ -12,6 +12,5 @@ const destinoAntigo = ANTIGAS[location.hash.slice(1)];
 
 if (destinoAntigo) location.replace(destinoAntigo);
 else iniciarPagina("home", () => {
-  initThermals();
   Telemetria.iniciar();
 });

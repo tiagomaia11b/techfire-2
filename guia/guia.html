@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Meu guia · TechFire GuardFlame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Aplica o tema salvo antes de desenhar a página (evita "piscar") */
+  try { var t = localStorage.getItem('gf_tema'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+<link rel="stylesheet" href="../css/estilo.css">
+<link rel="stylesheet" href="guia.css">
+</head>
+<body data-raiz="../" class="restrito">
+
+<!-- Topo (menu): montado pelo js/layout.js -->
+<div id="topo"></div>
+
+<main>
+<div class="wrap page-title">
+  <span class="tag"><span data-icon="lock"></span>Só você vê esta página</span>
+  <h1 style="margin-top:14px">Meu guia, <span id="donoNome">Tiago</span></h1>
+  <p>O passo a passo completo, do Raspberry Pi desligado até a câmera na Twitch e o GPS no mapa do site. Vá marcando <b>Feito</b> em cada passo — o progresso fica salvo neste navegador.</p>
+  <div class="progresso"><div class="barra"><i id="barra"></i></div><span id="barraTxt">0 passos</span><button class="btn btn-line btn-sm" type="button" id="zerar">Zerar</button></div>
+
+  <div class="status-rapido">
+    <div class="card"><span class="muted">Canal da Twitch no site</span><span class="pill" id="stCanal">--</span><p class="muted" style="font-size:.82rem;margin:8px 0 0" id="stCanalLink"></p></div>
+    <div class="card"><span class="muted">Banco de dados</span><span class="pill" id="stBanco">Testando…</span><p class="muted" style="font-size:.82rem;margin:8px 0 0" id="stBancoInfo"></p></div>
+    <div class="card"><span class="muted">GPS do drone</span><span class="pill" data-tel-pill>--</span><p class="muted" style="font-size:.82rem;margin:8px 0 0"><span data-tel="gps">--</span> · <span data-tel="hora">--</span></p></div>
+  </div>
+</div>
+
+<div class="section tight">
+  <div class="wrap guia">
+
+    <nav class="indice" aria-label="Partes do guia">
+      <b>Preparação</b>
+      <a href="#parte-a">A · Antes de começar</a>
+      <a href="#parte-b">B · Preparar o Raspberry Pi</a>
+      <a href="#parte-c">C · Câmera Arducam</a>
+      <a href="#parte-d">D · Internet 4G</a>
+      <b>Twitch</b>
+      <a href="#parte-e">E · Conta e chave da Twitch</a>
+      <a href="#parte-f">F · Transmitir do Pi</a>
+      <a href="#parte-g">G · Mostrar no site</a>
+      <b>GPS</b>
+      <a href="#parte-h">H · GPS na Pixhawk</a>
+      <a href="#parte-i">I · Banco de dados</a>
+      <a href="#parte-j">J · GPS no Raspberry Pi</a>
+      <b>Final</b>
+      <a href="#parte-k">K · Ligar sozinho</a>
+      <a href="#parte-l">L · Dia da apresentação</a>
+      <a href="#parte-m">M · Deu problema?</a>
+    </nav>
+
+    <div>
+      <div class="caixa perigo"><b>Importante sobre esta página:</b> ela só aparece no menu e só abre para a conta <b>tiago@techfire.com</b>. Mas o site não tem servidor de login, então quem abrir o código-fonte consegue ler este arquivo. Por isso <b>nunca escreva chaves ou senhas aqui</b> — elas ficam só no Raspberry Pi e no <code>api/conexao.php</code>.</div>
+
+      <!-- ===================================================== A -->
+      <section class="parte" id="parte-a">
+        <h2><span class="letra">A</span>Antes de começar</h2>
+        <p class="intro">Como tudo se conecta, e o que separar antes de começar.</p>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Caminho</th><th>Como funciona</th></tr></thead>
+          <tbody>
+            <tr><td><b>Vídeo</b></td><td>Arducam → cabo flat → Raspberry Pi → <code>transmitir_twitch.sh</code> (rpicam-vid + ffmpeg) → modem 4G → <b>Twitch</b> → player da Twitch dentro da página Ao vivo do site.</td></tr>
+            <tr><td><b>GPS</b></td><td>GPS NEO-6M → Pixhawk → cabo USB → Raspberry Pi → <code>enviar_gps.py</code> (MAVLink) → modem 4G → <code>api/telemetria.php</code> → <b>MySQL</b> → mapa da página GPS do site (atualiza a cada 2 s).</td></tr>
+          </tbody>
+        </table></div>
+        <div class="steps">
+          <div class="step" data-id="a1"><div>
+            <h3>Separe o material</h3>
+            <ul>
+              <li><b>Raspberry Pi 4</b> com fonte oficial de 5 V / 3 A (para os testes em bancada).</li>
+              <li><b>Cartão microSD</b> de 32 GB ou mais (classe A1/A2) e um leitor de cartão no PC.</li>
+              <li><b>Câmera Arducam IMX708</b> com o cabo flat que vem junto.</li>
+              <li><b>Pixhawk 2.4.8</b> + <b>GPS NEO-6M</b> + cabo <b>micro-USB</b> (que transmita dados, não só carga).</li>
+              <li><b>Modem 4G USB</b> com chip ativo e plano de dados (a transmissão gasta cerca de <b>1,1 GB por hora</b> a 2,5 Mbps).</li>
+              <li>Um <b>PC com Windows</b> na mesma rede Wi-Fi do Pi (para configurar).</li>
+              <li>Uma <b>conta na Twitch</b> com e-mail confirmado.</li>
+            </ul>
+          </div></div>
+          <div class="step" data-id="a2"><div>
+            <h3>Tenha os arquivos do site à mão</h3>
+            <p>Tudo que vai para o Raspberry Pi está na pasta <code>raspberry/</code> do site:</p>
+            <ul>
+              <li><code>transmitir_twitch.sh</code> — manda a câmera para a Twitch.</li>
+              <li><code>enviar_gps.py</code> — lê o GPS da Pixhawk e grava no banco.</li>
+            </ul>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== B -->
+      <section class="parte" id="parte-b">
+        <h2><span class="letra">B</span>Preparar o Raspberry Pi</h2>
+        <p class="intro">Instalar o sistema já com Wi-Fi e acesso remoto (SSH), para você comandar o Pi pelo PC sem precisar de monitor.</p>
+        <div class="steps">
+          <div class="step" data-id="b1"><div>
+            <h3>Grave o sistema no cartão</h3>
+            <ol>
+              <li>Baixe o <b>Raspberry Pi Imager</b> em <a href="https://www.raspberrypi.com/software/" target="_blank" rel="noopener">raspberrypi.com/software</a> e instale no PC.</li>
+              <li>Coloque o cartão no PC e abra o Imager.</li>
+              <li><b>Dispositivo:</b> Raspberry Pi 4. <b>Sistema:</b> Raspberry Pi OS (64-bit) — pode ser a versão <i>Lite</i>, sem tela. <b>Armazenamento:</b> o cartão.</li>
+              <li>Clique em <b>Avançar</b> › <b>Editar configurações</b> e preencha:
+                <ul>
+                  <li><b>Nome do host:</b> <code>guardflame</code></li>
+                  <li><b>Usuário:</b> <code>pi</code> e uma senha que você não vai esquecer.</li>
+                  <li><b>Wi-Fi:</b> nome e senha da rede da sua casa / escola. País: BR.</li>
+                  <li><b>Fuso horário:</b> America/Sao_Paulo. Teclado: br.</li>
+                  <li>Aba <b>Serviços</b>: marque <b>Ativar SSH</b> › “Usar senha para autenticação”.</li>
+                </ul>
+              </li>
+              <li>Salve, confirme e espere gravar e verificar.</li>
+            </ol>
+            <div class="caixa dica">Se usar outro nome de usuário (diferente de <b>pi</b>), troque <code>/home/pi</code> por <code>/home/SEU_USUARIO</code> em todos os comandos deste guia.</div>
+          </div></div>
+          <div class="step" data-id="b2"><div>
+            <h3>Ligue o Pi e entre pelo PC</h3>
+            <p>Coloque o cartão no Pi, ligue a fonte e espere uns 2 minutos (o primeiro boot demora). No PC, abra o <b>PowerShell</b> e digite:</p>
+<pre class="code"><code>ssh pi@guardflame.local</code></pre>
+            <p>Na primeira vez ele pergunta <i>Are you sure you want to continue connecting?</i> — digite <code>yes</code> e depois a senha (ela não aparece enquanto você digita, é normal).</p>
+            <div class="caixa aviso">Se der <b>Could not resolve hostname</b>: abra o painel do roteador (ou o app da operadora) e procure o IP do “guardflame”. Use <code>ssh pi@192.168.X.X</code>.</div>
+          </div></div>
+          <div class="step" data-id="b3"><div>
+            <h3>Atualize o sistema</h3>
+            <p>Já dentro do Pi (o terminal mostra <code>pi@guardflame:~ $</code>):</p>
+<pre class="code"><code>sudo apt update
+sudo apt full-upgrade -y
+sudo reboot</code></pre>
+            <p>Ele reinicia e a conexão cai. Espere 1 minuto e entre de novo com <code>ssh pi@guardflame.local</code>.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== C -->
+      <section class="parte" id="parte-c">
+        <h2><span class="letra">C</span>Câmera Arducam IMX708</h2>
+        <div class="steps">
+          <div class="step" data-id="c1"><div>
+            <h3>Encaixe o cabo flat (com o Pi DESLIGADO)</h3>
+            <ol>
+              <li>Desligue o Pi: <code>sudo poweroff</code> e tire a fonte.</li>
+              <li>No Pi 4, use a porta <b>CAMERA</b> (entre o HDMI e a saída de áudio) — não a DISPLAY.</li>
+              <li>Levante a trava preta com cuidado, encaixe o cabo com os <b>contatos metálicos virados para o lado do HDMI</b> e abaixe a trava.</li>
+              <li>Na câmera, o mesmo: contatos virados para a placa.</li>
+            </ol>
+          </div></div>
+          <div class="step" data-id="c2"><div>
+            <h3>Instale os programas e teste</h3>
+            <p>Ligue o Pi, entre por SSH e rode:</p>
+<pre class="code"><code>sudo apt install -y rpicam-apps ffmpeg
+rpicam-hello --list-cameras</code></pre>
+            <p>Tem que aparecer algo como <code>0 : imx708 [4608x2592]</code>. Depois tire uma foto de teste:</p>
+<pre class="code"><code>rpicam-still -o teste.jpg</code></pre>
+            <p>Para ver a foto no PC, rode <b>no PowerShell do PC</b> (não no Pi): <code>scp pi@guardflame.local:~/teste.jpg .</code></p>
+          </div></div>
+          <div class="step" data-id="c3"><div>
+            <h3>Se aparecer “No cameras available”</h3>
+            <ol>
+              <li>Confira o cabo dos dois lados (é o problema em 90% dos casos).</li>
+              <li>Force o modelo da câmera:
+<pre class="code"><code>sudo nano /boot/firmware/config.txt</code></pre>
+                No final do arquivo, adicione a linha <code>dtoverlay=imx708</code>. Se existir <code>camera_auto_detect=1</code>, troque para <code>camera_auto_detect=0</code>. Salve com <b>Ctrl+O</b>, <b>Enter</b>, saia com <b>Ctrl+X</b> e rode <code>sudo reboot</code>.</li>
+            </ol>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== D -->
+      <section class="parte" id="parte-d">
+        <h2><span class="letra">D</span>Internet 4G</h2>
+        <p class="intro">No voo não tem Wi-Fi: a Twitch e o banco recebem tudo pelo modem 4G.</p>
+        <div class="steps">
+          <div class="step" data-id="d1"><div>
+            <h3>Conecte o modem e confira se ele apareceu</h3>
+            <p>Coloque o chip no modem, ligue numa porta USB do Pi e espere 30 s:</p>
+<pre class="code"><code>ip -br a</code></pre>
+            <p>Deve aparecer uma interface nova (<code>eth1</code>, <code>usb0</code> ou <code>wwan0</code>) com um IP. Modems de operadora do tipo “HiLink” (os que têm a página <code>192.168.8.1</code>) funcionam sozinhos.</p>
+            <div class="caixa aviso">Se não aparecer IP, o modem é do tipo que precisa de discador. Instale e conecte assim (troque o APN pelo da operadora: <code>claro.com.br</code>, <code>timbrasil.br</code>, <code>zap.vivo.com.br</code>):
+<pre class="code"><code>sudo apt install -y modemmanager
+sudo nmcli connection add type gsm ifname '*' con-name 4g apn zap.vivo.com.br
+sudo nmcli connection up 4g</code></pre></div>
+          </div></div>
+          <div class="step" data-id="d2"><div>
+            <h3>Teste a velocidade de envio (upload)</h3>
+            <p>Desligue o Wi-Fi para ter certeza de que está testando o 4G e meça:</p>
+<pre class="code"><code>sudo apt install -y speedtest-cli
+sudo nmcli radio wifi off
+speedtest-cli --simple
+sudo nmcli radio wifi on</code></pre>
+            <div class="caixa perigo"><b>Cuidado:</b> desligar o Wi-Fi derruba o SSH se você estiver conectado por ele. Faça este teste com o Pi ligado num monitor, ou rode tudo numa linha só: <code>sudo nmcli radio wifi off; speedtest-cli --simple; sudo nmcli radio wifi on</code></div>
+            <p>O que importa é o <b>Upload</b>:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Upload</th><th>O que usar no script da Twitch</th></tr></thead>
+              <tbody>
+                <tr><td>4 Mbps ou mais</td><td>Padrão: 1280×720, <code>BITRATE=2500000</code></td></tr>
+                <tr><td>2 a 4 Mbps</td><td>1280×720, <code>BITRATE=1500000</code></td></tr>
+                <tr><td>menos de 2 Mbps</td><td><code>LARGURA=854</code>, <code>ALTURA=480</code>, <code>BITRATE=900000</code></td></tr>
+              </tbody>
+            </table></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== E -->
+      <section class="parte" id="parte-e">
+        <h2><span class="letra">E</span>Conta e chave da Twitch</h2>
+        <div class="steps">
+          <div class="step" data-id="e1"><div>
+            <h3>Prepare o canal</h3>
+            <ol>
+              <li>Entre em <a href="https://www.twitch.tv" target="_blank" rel="noopener">twitch.tv</a> com a conta do projeto (ex.: <b>techfire_guardflame</b>). O nome do canal é o que aparece em <code>twitch.tv/NOME</code>.</li>
+              <li>Confirme o e-mail. Se a Twitch pedir, ative a <b>verificação em duas etapas</b> (Configurações › Segurança e privacidade) — sem isso ela pode não liberar a transmissão.</li>
+            </ol>
+          </div></div>
+          <div class="step" data-id="e2"><div>
+            <h3>Copie a chave de transmissão</h3>
+            <ol>
+              <li>Clique na sua foto (canto superior direito) › <b>Painel do criador</b>.</li>
+              <li>Menu da esquerda: <b>Configurações</b> › <b>Transmissão</b>.</li>
+              <li>Em <b>Chave de transmissão principal</b>, clique em <b>Copiar</b>. Ela começa com <code>live_</code>.</li>
+            </ol>
+            <div class="caixa perigo"><b>A chave é uma senha.</b> Quem tiver ela transmite no seu canal. Não mande no WhatsApp, não coloque no site nem em prints do TCC. Se vazar, clique em <b>Redefinir</b> na mesma tela e troque no Pi.</div>
+          </div></div>
+          <div class="step" data-id="e3"><div>
+            <h3>Ajuste as opções do canal</h3>
+            <ul>
+              <li>Na mesma tela de Transmissão: <b>Modo de latência</b> › <b>Baixa latência</b> (o vídeo chega com menos atraso).</li>
+              <li><b>Armazenar transmissões anteriores</b>: ligado, para guardar os voos e usar no TCC.</li>
+              <li>Em <b>Gerenciador de transmissão</b>, coloque o título (ex.: “GuardFlame 1.0 — voo ao vivo no UNASP SP”) e a categoria <b>Science &amp; Technology</b>.</li>
+            </ul>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== F -->
+      <section class="parte" id="parte-f">
+        <h2><span class="letra">F</span>Transmitir do Raspberry Pi</h2>
+        <div class="steps">
+          <div class="step" data-id="f1"><div>
+            <h3>Copie os scripts do PC para o Pi</h3>
+            <p>No <b>PowerShell do PC</b>, dentro da pasta do site:</p>
+<pre class="code"><code>cd C:\Users\tiago_maia\Downloads\guardflame-site\guardflame-site
+scp .\raspberry\transmitir_twitch.sh .\raspberry\enviar_gps.py pi@guardflame.local:~/</code></pre>
+          </div></div>
+          <div class="step" data-id="f2"><div>
+            <h3>Arrume as quebras de linha e dê permissão</h3>
+            <p>Arquivos que passaram pelo Windows podem vir com quebras de linha do Windows, e o Linux não roda. No <b>Pi</b>:</p>
+<pre class="code"><code>sed -i 's/\r$//' ~/transmitir_twitch.sh ~/enviar_gps.py
+chmod +x ~/transmitir_twitch.sh</code></pre>
+          </div></div>
+          <div class="step" data-id="f3"><div>
+            <h3>Coloque a chave no script</h3>
+<pre class="code"><code>nano ~/transmitir_twitch.sh</code></pre>
+            <p>Ache a linha <code>CHAVE_TWITCH="COLE_SUA_CHAVE_AQUI"</code>, apague o texto entre as aspas e cole a chave (no terminal, colar é <b>botão direito do mouse</b>). Fica assim:</p>
+<pre class="code"><code>CHAVE_TWITCH="live_123456789_AbCdEfGhIjKlMnOp"</code></pre>
+            <p>Se o upload do 4G for baixo, ajuste <code>LARGURA</code>, <code>ALTURA</code> e <code>BITRATE</code> conforme a tabela da parte D. Salve: <b>Ctrl+O</b>, <b>Enter</b>, <b>Ctrl+X</b>.</p>
+          </div></div>
+          <div class="step" data-id="f4"><div>
+            <h3>Primeira transmissão</h3>
+<pre class="code"><code>~/transmitir_twitch.sh</code></pre>
+            <ol>
+              <li>Deve aparecer <code>Transmitindo para a Twitch... (Ctrl+C para parar)</code> e algumas linhas do rpicam-vid.</li>
+              <li>Abra <code>twitch.tv/SEU_CANAL</code> no PC. Em 10–20 segundos o canal fica <b>AO VIVO</b>.</li>
+              <li>Para parar: <b>Ctrl+C</b> no terminal do Pi.</li>
+            </ol>
+            <div class="caixa dica">Para ver a saúde da transmissão (bitrate, quedas), use o <a href="https://inspector.twitch.tv" target="_blank" rel="noopener">Twitch Inspector</a> ou o painel <b>Gerenciador de transmissão</b>. Se a linha de bitrate ficar oscilando muito, diminua o <code>BITRATE</code>.</div>
+          </div></div>
+          <div class="step" data-id="f5"><div>
+            <h3>Áudio do microfone (opcional)</h3>
+            <p>Com o microfone USB ligado, descubra o número dele:</p>
+<pre class="code"><code>arecord -l</code></pre>
+            <p>Se aparecer <code>card 2: ... device 0</code>, o microfone é <code>plughw:2,0</code>. No script, troque <code>AUDIO="silencio"</code> por <code>AUDIO="microfone"</code> e <code>MIC="plughw:2,0"</code>.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== G -->
+      <section class="parte" id="parte-g">
+        <h2><span class="letra">G</span>Mostrar a Twitch no site</h2>
+        <div class="steps">
+          <div class="step" data-id="g1"><div>
+            <h3>Coloque o nome do canal no config</h3>
+            <p>Abra <code>js/config.js</code> e, dentro de <code>aoVivo</code>, preencha só o <b>nome</b> do canal (nunca a chave):</p>
+<pre class="code"><code>aoVivo: {
+  tipo: "twitch",
+  twitchCanal: "techfire_guardflame",</code></pre>
+          </div></div>
+          <div class="step" data-id="g2"><div>
+            <h3>Abra o site do jeito certo</h3>
+            <p>A Twitch só mostra o player dentro de um site aberto por <b>endereço</b>:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Como abriu o site</th><th>Player da Twitch</th></tr></thead>
+              <tbody>
+                <tr><td>Clicando duas vezes no index.html (<code>file:///...</code>)</td><td>Não aparece — só o botão “Abrir na Twitch”</td></tr>
+                <tr><td>XAMPP: <code>http://localhost/guardflame</code></td><td>Funciona</td></tr>
+                <tr><td>Hospedagem com <code>https://</code></td><td>Funciona</td></tr>
+                <tr><td>Hospedagem só com <code>http://</code> (sem cadeado)</td><td>Não funciona — ative o SSL grátis da hospedagem</td></tr>
+              </tbody>
+            </table></div>
+          </div></div>
+          <div class="step" data-id="g3"><div>
+            <h3>Teste</h3>
+            <p>Com o Pi transmitindo, abra <a href="../camera/camera.html">Conexão › Câmera</a>, confira se os itens estão verdes e clique em <b>Testar aqui</b>. Depois abra <a href="../aovivo/aovivo.html">Ao vivo</a>: a transmissão aparece com o selo vermelho <b>AO VIVO</b>.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== H -->
+      <section class="parte" id="parte-h">
+        <h2><span class="letra">H</span>GPS na Pixhawk</h2>
+        <p class="intro">Antes de mexer no Pi, garanta que a Pixhawk está lendo o GPS. Isso é feito no PC, com o Mission Planner.</p>
+        <div class="steps">
+          <div class="step" data-id="h1"><div>
+            <h3>Ligue o GPS na Pixhawk</h3>
+            <ul>
+              <li>Cabo de <b>6 fios</b> do NEO-6M → porta <b>GPS</b> da Pixhawk.</li>
+              <li>Se o módulo tiver bússola, o cabo de <b>4 fios</b> vai na porta <b>I2C</b>.</li>
+              <li>A setinha impressa no módulo aponta para a <b>frente</b> do drone. Monte o GPS no alto, longe dos fios de força e do modem 4G (eles atrapalham o sinal).</li>
+            </ul>
+          </div></div>
+          <div class="step" data-id="h2"><div>
+            <h3>Confira no Mission Planner</h3>
+            <ol>
+              <li>Instale o <a href="https://ardupilot.org/planner/docs/mission-planner-installation.html" target="_blank" rel="noopener">Mission Planner</a> no PC.</li>
+              <li>Ligue a Pixhawk no PC pelo micro-USB. No canto superior direito, escolha a porta <b>COM</b> que apareceu, <b>115200</b>, e clique em <b>Conectar</b>.</li>
+              <li>Leve o drone para <b>perto de uma janela ou ao ar livre</b>. Na tela principal (HUD), espere aparecer <b>GPS: 3D Fix</b>.</li>
+            </ol>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Indicador</th><th>Bom para voar</th></tr></thead>
+              <tbody>
+                <tr><td>Fix</td><td><b>3D Fix</b></td></tr>
+                <tr><td>Satélites (Sats)</td><td>6 ou mais (ideal 9+)</td></tr>
+                <tr><td>HDOP</td><td>menor que 2</td></tr>
+              </tbody>
+            </table></div>
+            <div class="caixa aviso">O NEO-6M demora de <b>1 a 5 minutos</b> para achar os satélites na primeira vez (e não funciona dentro de prédio). O LED do módulo começa a piscar quando ele achou.</div>
+            <p>Depois de conferir, clique em <b>Desconectar</b> e tire o USB do PC — agora ele vai no Pi.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== I -->
+      <section class="parte" id="parte-i">
+        <h2><span class="letra">I</span>Banco de dados</h2>
+        <p class="intro">O Pi grava o GPS no banco pela internet. Por isso, no voo de verdade, o banco precisa estar <b>numa hospedagem na internet</b> — o XAMPP do seu PC só serve para testes na mesma rede Wi-Fi.</p>
+        <div class="steps">
+          <div class="step" data-id="i1"><div>
+            <h3>Para testar: XAMPP no PC</h3>
+            <ol>
+              <li>Instale o <a href="https://www.apachefriends.org/pt_br/" target="_blank" rel="noopener">XAMPP</a>. No painel, clique em <b>Start</b> no <b>Apache</b> e no <b>MySQL</b>.</li>
+              <li>Copie a pasta do site para <code>C:\xampp\htdocs\guardflame</code>.</li>
+              <li>Abra <code>http://localhost/guardflame</code> no navegador.</li>
+            </ol>
+          </div></div>
+          <div class="step" data-id="i2"><div>
+            <h3>Configure a conexão e a chave</h3>
+            <p>Abra <code>api/conexao.php</code> num editor (Bloco de Notas ou VS Code). No XAMPP, usuário <code>root</code> e senha vazia já funcionam. Troque a <b>CHAVE_API</b> por uma senha só sua, com 12 ou mais letras e números, sem espaços e sem aspas (invente uma — não use exemplo de lugar nenhum):</p>
+<pre class="code"><code>const CHAVE_API  = 'SUA_CHAVE';</code></pre>
+            <p>Enquanto ela for <code>troque-esta-chave</code>, a API recusa gravar qualquer coisa.</p>
+          </div></div>
+          <div class="step" data-id="i3"><div>
+            <h3>Crie as tabelas</h3>
+            <p>Abra <a href="../banco/banco.html">Conexão › Banco de dados</a>, digite a chave e clique em <b>Criar banco e tabelas</b>. O status fica verde com as 4 tabelas.</p>
+          </div></div>
+          <div class="step" data-id="i4"><div>
+            <h3>Teste a gravação pelo PC</h3>
+            <p>No <b>PowerShell do PC</b> (troque a chave):</p>
+<pre class="code"><code>Invoke-RestMethod -Method Post -Uri http://localhost/guardflame/api/telemetria.php -Headers @{ "X-Chave" = "SUA_CHAVE" } -ContentType "application/json" -Body '{"lat":-23.6664,"lon":-46.7831,"altitude":60,"status":"Teste"}'</code></pre>
+            <p>A resposta deve ser <code>ok : True</code>. Abra a página <a href="../gps/gps.html">GPS</a>: o ponto aparece no UNASP SP com o selo verde.</p>
+          </div></div>
+          <div class="step" data-id="i5"><div>
+            <h3>Deixe o Pi enxergar o XAMPP (só para testes)</h3>
+            <ol>
+              <li>No PC, rode <code>ipconfig</code> e anote o <b>Endereço IPv4</b> do Wi-Fi (ex.: <code>192.168.0.15</code>).</li>
+              <li>Libere o Apache no firewall: abra o PowerShell <b>como administrador</b> e rode:
+<pre class="code"><code>New-NetFirewallRule -DisplayName "XAMPP Apache" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow</code></pre></li>
+              <li>No Pi (no Wi-Fi da mesma rede), teste:
+<pre class="code"><code>curl http://192.168.0.15/guardflame/api/status.php</code></pre>
+                Tem que voltar um texto com <code>"ok":true</code>.</li>
+            </ol>
+          </div></div>
+          <div class="step" data-id="i6"><div>
+            <h3>Para o voo: hospedagem na internet</h3>
+            <ol>
+              <li>Contrate uma hospedagem com <b>PHP 8</b>, <b>MySQL</b> e <b>SSL (https)</b> — existem planos gratuitos.</li>
+              <li>No painel dela, crie um banco MySQL e anote: <b>host</b>, <b>usuário</b>, <b>senha</b> e <b>nome do banco</b>.</li>
+              <li>Coloque esses dados no <code>api/conexao.php</code> e envie a pasta do site inteira pelo gerenciador de arquivos (ou FTP).</li>
+              <li>Abra <code>https://SEU-SITE/banco/banco.html</code> e crie as tabelas de novo, como no passo 3.</li>
+            </ol>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== J -->
+      <section class="parte" id="parte-j">
+        <h2><span class="letra">J</span>GPS no Raspberry Pi</h2>
+        <div class="steps">
+          <div class="step" data-id="j1"><div>
+            <h3>Ligue a Pixhawk no Pi e confira a porta</h3>
+            <p>Cabo micro-USB da Pixhawk → USB do Pi. No Pi:</p>
+<pre class="code"><code>ls /dev/ttyACM*</code></pre>
+            <p>Deve aparecer <code>/dev/ttyACM0</code>. Dê permissão ao seu usuário para usar a porta (só uma vez):</p>
+<pre class="code"><code>sudo usermod -aG dialout $USER
+sudo reboot</code></pre>
+          </div></div>
+          <div class="step" data-id="j2"><div>
+            <h3>Instale as bibliotecas</h3>
+<pre class="code"><code>sudo apt install -y python3-venv
+python3 -m venv ~/gf
+~/gf/bin/pip install pymavlink requests</code></pre>
+          </div></div>
+          <div class="step" data-id="j3"><div>
+            <h3>Teste se o Pi conversa com a Pixhawk</h3>
+<pre class="code"><code>~/gf/bin/python -c "from pymavlink import mavutil; m=mavutil.mavlink_connection('/dev/ttyACM0', baud=115200); m.wait_heartbeat(); print('Pixhawk OK, sistema', m.target_system)"</code></pre>
+            <p>Tem que aparecer <code>Pixhawk OK, sistema 1</code> em poucos segundos. Se ficar parado, veja a parte M.</p>
+          </div></div>
+          <div class="step" data-id="j4"><div>
+            <h3>Configure o enviar_gps.py</h3>
+<pre class="code"><code>nano ~/enviar_gps.py</code></pre>
+            <p>Edite as linhas do topo:</p>
+<pre class="code"><code>SITE_API = "http://192.168.0.15/guardflame/api/"   # teste com XAMPP (IP do seu PC)
+# SITE_API = "https://SEU-SITE.com/api/"           # voo de verdade (hospedagem)
+CHAVE = "SUA_CHAVE"                       # a mesma do api/conexao.php
+PORTA = "/dev/ttyACM0"
+BAUD = 115200</code></pre>
+          </div></div>
+          <div class="step" data-id="j5"><div>
+            <h3>Teste sem o drone (modo simulado)</h3>
+<pre class="code"><code>~/gf/bin/python ~/enviar_gps.py --simular</code></pre>
+            <p>Cada linha deve começar com <code>enviado</code>. Abra a página <a href="../gps/gps.html">GPS</a>: o ponto anda em círculo sobre o UNASP SP e o selo fica <b>Drone conectado</b>. <b>Ctrl+C</b> para parar.</p>
+          </div></div>
+          <div class="step" data-id="j6"><div>
+            <h3>Com o GPS de verdade</h3>
+            <p>Bateria do drone ligada, GPS a céu aberto:</p>
+<pre class="code"><code>~/gf/bin/python ~/enviar_gps.py</code></pre>
+            <ol>
+              <li><code>Conectando à Pixhawk...</code> → <code>Pixhawk conectada</code>.</li>
+              <li><code>Esperando o GPS achar os satélites...</code> — normal por 1 a 5 minutos.</li>
+              <li>Depois do 3D Fix, as linhas viram <code>enviado lat -23.66... lon -46.78...</code> e o mapa do site segue o drone.</li>
+            </ol>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== K -->
+      <section class="parte" id="parte-k">
+        <h2><span class="letra">K</span>Ligar sozinho quando o drone liga</h2>
+        <p class="intro">Com estes serviços, é só ligar a bateria: em ~1 minuto a câmera entra na Twitch e o GPS começa a gravar. Eles também reiniciam sozinhos se caírem.</p>
+        <div class="caixa aviso">Use estes serviços <b>ou</b> a linha do <code>crontab</code> das páginas Câmera/GPS — <b>nunca os dois</b>, senão o script roda duas vezes. Se já colocou no crontab, rode <code>crontab -e</code> e apague as linhas.</div>
+        <div class="steps">
+          <div class="step" data-id="k1"><div>
+            <h3>Serviço da Twitch</h3>
+<pre class="code"><code>sudo nano /etc/systemd/system/guardflame-twitch.service</code></pre>
+            <p>Cole o conteúdo abaixo, salve e saia:</p>
+<pre class="code"><code>[Unit]
+Description=GuardFlame - camera na Twitch
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pi
+ExecStart=/home/pi/transmitir_twitch.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+          </div></div>
+          <div class="step" data-id="k2"><div>
+            <h3>Serviço do GPS</h3>
+<pre class="code"><code>sudo nano /etc/systemd/system/guardflame-gps.service</code></pre>
+<pre class="code"><code>[Unit]
+Description=GuardFlame - GPS para o site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pi
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/pi/gf/bin/python /home/pi/enviar_gps.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+          </div></div>
+          <div class="step" data-id="k3"><div>
+            <h3>Ative os dois</h3>
+<pre class="code"><code>sudo systemctl daemon-reload
+sudo systemctl enable --now guardflame-twitch guardflame-gps</code></pre>
+            <p>Comandos do dia a dia:</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Para</th><th>Comando</th></tr></thead>
+              <tbody>
+                <tr><td>Ver se está rodando</td><td><code>systemctl status guardflame-twitch guardflame-gps</code></td></tr>
+                <tr><td>Ver o que o GPS está fazendo (ao vivo)</td><td><code>journalctl -u guardflame-gps -f</code></td></tr>
+                <tr><td>Ver o que a Twitch está fazendo</td><td><code>journalctl -u guardflame-twitch -f</code></td></tr>
+                <tr><td>Parar a transmissão</td><td><code>sudo systemctl stop guardflame-twitch</code></td></tr>
+                <tr><td>Reiniciar depois de editar um script</td><td><code>sudo systemctl restart guardflame-twitch guardflame-gps</code></td></tr>
+                <tr><td>Não ligar mais sozinho</td><td><code>sudo systemctl disable guardflame-twitch guardflame-gps</code></td></tr>
+              </tbody>
+            </table></div>
+          </div></div>
+          <div class="step" data-id="k4"><div>
+            <h3>Prova final</h3>
+            <p>Rode <code>sudo reboot</code>. Sem digitar nada, em 1–2 minutos: o canal fica AO VIVO na Twitch e a página GPS mostra <b>Drone conectado</b>.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== L -->
+      <section class="parte" id="parte-l">
+        <h2><span class="letra">L</span>Dia da apresentação</h2>
+        <div class="steps">
+          <div class="step" data-id="l1"><div>
+            <h3>Na véspera</h3>
+            <ul>
+              <li>Baterias LiPo carregadas e chip 4G com <b>pelo menos 3 GB</b> de dados.</li>
+              <li>Faça um teste completo (parte K, passo 4) no próprio <b>UNASP SP</b>, porque o sinal 4G muda de lugar para lugar.</li>
+              <li>Confira se o site publicado abre em <code>https://</code> no computador da apresentação.</li>
+            </ul>
+          </div></div>
+          <div class="step" data-id="l2"><div>
+            <h3>30 minutos antes</h3>
+            <ol>
+              <li>Ligue o drone a céu aberto, para o GPS já pegar os satélites.</li>
+              <li>Abra no PC: a página <b>Ao vivo</b>, a página <b>GPS</b> e o <b>Painel do criador</b> da Twitch.</li>
+              <li>Confira os três quadros no topo desta página: todos verdes.</li>
+            </ol>
+          </div></div>
+          <div class="step" data-id="l3"><div>
+            <h3>Plano B</h3>
+            <ul>
+              <li>Se o 4G falhar: o site continua funcionando em modo <b>Simulação</b> (o selo fica amarelo).</li>
+              <li>Tenha os vídeos da montagem e um vídeo de um voo gravado na pasta <code>videos/</code> para mostrar.</li>
+              <li>Os voos anteriores ficam salvos na Twitch (Painel do criador › Conteúdo › Vídeos), se você ativou a opção na parte E.</li>
+            </ul>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================================================== M -->
+      <section class="parte" id="parte-m">
+        <h2><span class="letra">M</span>Deu problema?</h2>
+        <h3>Twitch e câmera</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>O que aparece</th><th>O que fazer</th></tr></thead>
+          <tbody>
+            <tr><td><code>Coloque sua chave da Twitch...</code></td><td>Faltou a parte F, passo 3.</td></tr>
+            <tr><td><code>bad interpreter</code> ou <code>$'\r': command not found</code></td><td>Quebras de linha do Windows: rode o <code>sed</code> da parte F, passo 2.</td></tr>
+            <tr><td><code>Permission denied</code> ao rodar o script</td><td><code>chmod +x ~/transmitir_twitch.sh</code></td></tr>
+            <tr><td><code>No cameras available</code></td><td>Parte C, passo 3 (cabo e <code>dtoverlay=imx708</code>).</td></tr>
+            <tr><td><code>Connection refused</code>, <code>I/O error</code> ou <code>Broken pipe</code> no ffmpeg</td><td>Sem internet (<code>ping -c 3 8.8.8.8</code>) ou chave errada/incompleta — copie de novo, inteira, começando com <code>live_</code>.</td></tr>
+            <tr><td>Script rodando, mas o canal continua offline</td><td>Espere 20 s e recarregue. Confira se você está olhando o canal certo (o da chave).</td></tr>
+            <tr><td>Vídeo travando ou caindo toda hora</td><td>Upload fraco: diminua o <code>BITRATE</code> ou a resolução (tabela da parte D).</td></tr>
+            <tr><td>Site mostra o botão “Abrir na Twitch” em vez do vídeo</td><td>Site aberto como arquivo ou sem https — parte G, passo 2.</td></tr>
+            <tr><td>Player da Twitch com erro de conexão recusada</td><td>O site precisa de <code>https://</code> (ou <code>localhost</code>). Ative o SSL na hospedagem.</td></tr>
+          </tbody>
+        </table></div>
+        <h3 style="margin-top:28px">GPS e banco de dados</h3>
+        <div class="table-wrap"><table>
+          <thead><tr><th>O que aparece</th><th>O que fazer</th></tr></thead>
+          <tbody>
+            <tr><td><code>Edite SITE_API e CHAVE no topo deste arquivo</code></td><td>Parte J, passo 4.</td></tr>
+            <tr><td>Parado em <code>Conectando à Pixhawk...</code></td><td>Porta errada: rode <code>ls /dev/ttyACM*</code>. Troque o cabo USB (alguns só carregam). Feche o Mission Planner se ele estiver ligado na Pixhawk.</td></tr>
+            <tr><td><code>Permission denied: '/dev/ttyACM0'</code></td><td>Faltou o <code>usermod -aG dialout</code> + reboot (parte J, passo 1).</td></tr>
+            <tr><td><code>Esperando o GPS achar os satélites</code> por muito tempo</td><td>Vá para céu aberto e espere até 5 min. Confira no Mission Planner (parte H).</td></tr>
+            <tr><td><code>O site respondeu 401</code></td><td>A CHAVE do script é diferente da <code>CHAVE_API</code> do <code>api/conexao.php</code>.</td></tr>
+            <tr><td><code>O site respondeu 403</code></td><td>A <code>CHAVE_API</code> ainda é a padrão — troque (parte I, passo 2).</td></tr>
+            <tr><td><code>O site respondeu 500</code></td><td>Banco desligado ou sem tabelas: abra a página Banco de dados e veja o status.</td></tr>
+            <tr><td><code>Sem conexão com o site</code></td><td>Endereço errado em <code>SITE_API</code>, sem internet, ou firewall do PC (parte I, passo 5). No voo, use o endereço da hospedagem, não o IP do PC.</td></tr>
+            <tr><td>Script diz <code>enviado</code>, mas o site mostra “Simulação”</td><td>O site está lendo outro banco: confira <code>api.url</code> no <code>js/config.js</code> e se o Pi e o site usam a mesma hospedagem.</td></tr>
+            <tr><td>Site mostra “Sem sinal”</td><td>O banco não recebe posição há mais de 15 s: veja <code>journalctl -u guardflame-gps -f</code> no Pi.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- Rodapé: montado pelo js/layout.js -->
+<div id="rodape"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/telemetria.js"></script>
+<script src="guia.js"></script>
+</body>
+</html>

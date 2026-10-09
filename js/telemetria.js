@@ -5,7 +5,7 @@
    enviando, simula os dados (CONFIG.telemetria = "auto").
 
    Qualquer elemento com data-tel="..." é atualizado sozinho:
-   status, bat, alt, vel, tmax, sinal, gps, sat, hora, fonte
+   status, bat, alt, vel, sinal, gps, sat, hora, fonte, local
    ===================================================================== */
 const Telemetria = {
   dados: { lat: CONFIG.mapa.lat, lon: CONFIG.mapa.lon, alt: 60, vel: 8, bateria: 87, satelites: null, status: "Em voo", idade: null },
@@ -63,13 +63,12 @@ const Telemetria = {
 
   mostrar() {
     const d = this.dados, f = this.fonte;
-    const conf = typeof Thermal !== "undefined" ? Thermal.ultimaConf : null;
     const vals = {
       status: f === "sem-sinal" ? "Sem sinal" : d.status,
       bat: d.bateria == null ? "--" : Math.round(d.bateria) + "%",
       alt: Math.round(d.alt) + " m",
       vel: Math.round(d.vel) + " km/h",
-      tmax: conf != null ? (conf >= 60 ? "Fogo " + conf + "%" : "Nenhum") : "--",
+      local: "Estamos no " + CONFIG.mapa.local,
       sinal: f === "drone" ? "4G" : f === "simulada" ? "Simulação" : "Sem sinal",
       gps: d.lat.toFixed(5) + ", " + d.lon.toFixed(5),
       sat: d.satelites == null ? "--" : d.satelites,

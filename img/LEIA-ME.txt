@@ -1,1 +1,3 @@
-Coloque aqui as fotos da equipe (ex.: ana.jpg) e informe o caminho no CONFIG.equipe
+Coloque aqui as fotos da equipe (ex.: ana.jpg) e informe o caminho no CONFIG.equipe.
+Foto do drone para o Início e o login: drone.jpg
+Fotos da montagem: pasta montagem/

@@ -5,7 +5,7 @@
 .auth-form .brand{margin-bottom:36px}
 .auth-form h1{font-size:2.2rem}
 .auth-side{position:relative;padding:28px;display:flex;flex-direction:column;justify-content:center;gap:20px;background:var(--bg)}
-.auth-side .scope{aspect-ratio:auto;flex:1;max-height:560px}
+.auth-side .vitrine{aspect-ratio:auto;flex:1;max-height:560px}
 .auth-side .facts{display:flex;gap:12px}
 .auth-side .facts div{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px 16px}
 .auth-side .facts b{font:800 1.5rem var(--f-display);color:var(--fire)}

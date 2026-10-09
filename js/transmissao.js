@@ -1,7 +1,7 @@
 /* =====================================================================
    TRANSMISSÃO AO VIVO — usado pelas páginas Ao vivo e Câmera
    Mostra no player a fonte configurada em CONFIG.aoVivo (Twitch, YouTube,
-   HLS ou MJPEG). Sem transmissão, mostra o mapa de detecção simulado.
+   HLS ou MJPEG). Sem transmissão, mostra o aviso "Transmissão offline".
 
    HTML esperado:
    <div class="player" id="livePlayer"><span class="live-badge">AO VIVO</span></div>
@@ -18,8 +18,7 @@ const Transmissao = {
     const add = (html) => box.insertAdjacentHTML("beforeend", html);
     const offline = (msg) => {
       badge.classList.remove("on");
-      add(`<div class="scope" style="aspect-ratio:auto;height:100%;border-radius:0"><canvas data-thermal></canvas><div class="hud"><div class="tl"><span class="rec">Mapa de detecção · simulação</span></div><div class="tr" data-hot>--</div><div class="bl">${msg}</div></div></div>`);
-      initThermals(box);
+      add(`<div class="empty"><div><span class="off-ic">${icon("radio")}</span><b>Transmissão offline</b>${msg}</div></div>`);
     };
     if (acts) acts.innerHTML = "";
 

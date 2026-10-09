@@ -72,6 +72,9 @@ function ativarTema() { $$("[data-theme-toggle]").forEach(b => b.addEventListene
    ===================================================================== */
 const sessao = () => store.get("gf_sessao", null);
 /* Manda para o login se a página exige conta. Retorna false quando redirecionou. */
+/* A conta logada é a do dono do site (CONFIG.dono)? */
+const ehDono = () => { const s = sessao(); return !!s && String(s.email).toLowerCase() === String(CONFIG.dono || "").toLowerCase(); };
+
 function protegerPagina() {
   if (CONFIG.exigirLogin && !sessao()) { location.replace(RAIZ + "login/login.html"); return false; }
   return true;

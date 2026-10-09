@@ -16,7 +16,7 @@ function iniciarMapa() {
   mapa = L.map("mapa").setView([lat, lon], 16);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(mapa);
   rastro = L.polyline([], { color: "#E2362B", weight: 3, opacity: .7 }).addTo(mapa);
-  marcador = L.circleMarker([lat, lon], { radius: 9, color: "#fff", weight: 3, fillColor: "#E2362B", fillOpacity: 1 }).addTo(mapa).bindTooltip("GuardFlame");
+  marcador = L.circleMarker([lat, lon], { radius: 9, color: "#fff", weight: 3, fillColor: "#E2362B", fillOpacity: 1 }).addTo(mapa).bindTooltip("Estamos no " + CONFIG.mapa.local, { permanent: true, direction: "top", offset: [0, -10] });
 }
 
 function moverDrone(d) {

@@ -68,6 +68,8 @@ textarea{padding:.85em 1em;min-height:120px;resize:vertical}
 .nav a.live{display:inline-flex;align-items:center;gap:.4em}
 .nav a.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--fire);box-shadow:0 0 0 3px color-mix(in srgb,var(--fire) 25%,transparent)}
 .nav a.live.on::before{background:#fff}
+.nav a.dono{border:1.5px dashed var(--fire);color:var(--fire)}
+.nav a.dono.on{border-style:solid;color:#fff}
 .tools{display:flex;gap:8px;align-items:center}
 .icon-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
 .icon-btn:hover{border-color:var(--fire);color:var(--fire)}
@@ -107,21 +109,25 @@ main{animation:in .35s ease}
 .page-title{padding-top:56px;padding-bottom:8px}
 .page-title p{color:var(--muted);max-width:620px;font-size:1.05rem}
 
-/* ============ VISOR TÉRMICO (elemento assinatura) ============ */
-.scope{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#07060f;aspect-ratio:16/11;box-shadow:var(--shadow);isolation:isolate}
-.scope canvas{width:100%;height:100%}
-.scope .hud{position:absolute;inset:0;pointer-events:none;color:#fff;font:600 .78rem var(--f-body);font-variant-numeric:tabular-nums}
-.scope .hud .tl,.scope .hud .tr,.scope .hud .bl,.scope .hud .br{position:absolute;padding:14px 16px;display:flex;gap:10px;align-items:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-.scope .hud .tl{top:0;left:0}.scope .hud .tr{top:0;right:0}.scope .hud .bl{bottom:0;left:0}.scope .hud .br{bottom:0;right:0}
+/* ============ VITRINE (foto do drone no Início e no login) ============
+   Coloque a foto em img/drone.jpg; sem ela, aparece o ícone do drone. */
+.vitrine{position:relative;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:16/11;box-shadow:var(--shadow);isolation:isolate;display:grid;place-items:center;color:#fff;background:radial-gradient(circle at 30% 20%,#ff7e29 0,transparent 55%),radial-gradient(circle at 80% 90%,#b0204f 0,transparent 50%),linear-gradient(135deg,#e2362b,#4a0c6b)}
+.vitrine .ic-drone{display:grid;place-items:center;width:40%;max-width:220px}
+.vitrine .ic-drone svg.i{width:100%;height:auto;stroke-width:1;opacity:.9}
+.vitrine img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vitrine .hud{position:absolute;inset:0;pointer-events:none;font:600 .82rem var(--f-body);font-variant-numeric:tabular-nums}
+.vitrine .hud>div{position:absolute;padding:14px 16px;display:flex;gap:10px;align-items:center;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.vitrine .hud .tl{top:0;left:0}.vitrine .hud .bl{bottom:0;left:0}.vitrine .hud .br{bottom:0;right:0}
 .rec{display:inline-flex;align-items:center;gap:6px}
 .rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff3b30;animation:blink 1.2s steps(2) infinite}
 @keyframes blink{50%{opacity:.15}}
-.scale{width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#0a0a2a,#4a0c6b,#b0204f,#e8512a,#f9a81e,#fffbe0)}
 
 /* ============ PLAYER DE VÍDEO ============ */
 .player{position:relative;border-radius:var(--r-md);overflow:hidden;background:#000;aspect-ratio:16/9}
 .player video,.player iframe,.player img{width:100%;height:100%;border:0;object-fit:cover}
 .player .empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;color:#cfd3da;background:repeating-linear-gradient(135deg,#15181d 0 14px,#191c22 14px 28px);font-size:.9rem}
+.player .empty .off-ic{display:block;margin:0 auto 8px;width:max-content;opacity:.7}
+.player .empty .off-ic svg.i{width:36px;height:36px}
 .player .empty b{display:block;color:#fff;font-family:var(--f-display);font-size:1.1rem;margin-bottom:4px}
 .player .empty code{background:rgba(255,255,255,.08);padding:.15em .45em;border-radius:5px;font-size:.85em}
 

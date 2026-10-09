@@ -5,4 +5,8 @@
    ===================================================================== */
 .links-conexao{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
 .vid-card .player{border-radius:var(--r-sm)}
-.vid-card h3{margin:14px 0 4px}
+.vid-card .tag{margin-top:14px}
+.vid-card h3{margin:8px 0 4px}
+.player.foto a{display:block;width:100%;height:100%}
+.player.foto img{transition:transform .3s}
+.player.foto a:hover img{transform:scale(1.04)}
